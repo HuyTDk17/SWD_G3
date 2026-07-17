@@ -1,0 +1,35 @@
+[
+    {
+        "_id": "6841a1b2c3d4e5f601234567",
+        "title": "Node.js Backend Development",
+        "description": "Learn how to build RESTful APIs with Node.js, Express, and MongoDB.",
+        "language": "English",
+        "price": 49.99,
+        "image": "https://example.com/images/nodejs-course.jpg",
+        "teacherId": "6841a1b2c3d4e5f601111111",
+        "createdAt": "2026-06-03T08:00:00.000Z",
+        "updatedAt": "2026-06-03T08:00:00.000Z"
+    },
+    {
+        "_id": "6841a1b2c3d4e5f601234568",
+        "title": "React Native for Beginners",
+        "description": "Build mobile applications using React Native and Expo.",
+        "language": "English",
+        "price": 59.99,
+        "image": "https://example.com/images/react-native-course.jpg",
+        "teacherId": "6841a1b2c3d4e5f601111112",
+        "createdAt": "2026-06-03T08:10:00.000Z",
+        "updatedAt": "2026-06-03T08:10:00.000Z"
+    },
+    {
+        "_id": "6841a1b2c3d4e5f601234569",
+        "title": "Lập trình Java cơ bản",
+        "description": "Khóa học Java từ cơ bản đến hướng đối tượng.",
+        "language": "Vietnamese",
+        "price": 39.99,
+        "image": "https://example.com/images/java-course.jpg",
+        "teacherId": "6841a1b2c3d4e5f601111113",
+        "createdAt": "2026-06-03T08:20:00.000Z",
+        "updatedAt": "2026-06-03T08:20:00.000Z"
+    }
+]

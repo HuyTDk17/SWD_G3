@@ -1,18 +1,17 @@
 import axiosClient from "./axiosClient";
 
-export const enrollCourse = (data) => {
-  return axiosClient.post("/enrollments/enroll", data);
+export const enrollCourse = (courseId) => {
+  return axiosClient.post("/api/v1/enrollments/enroll", { courseId });
 };
 
-// Đổi sang /student/:studentId để tránh conflict với route động
-export const getEnrolledCourses = (studentId) => {
-  return axiosClient.get(`/enrollments/student/${studentId}`);
+export const getEnrolledCourses = () => {
+  return axiosClient.get("/api/v1/enrollments/my");
 };
 
 export const unenrollCourse = (enrollmentId) => {
-  return axiosClient.delete(`/enrollments/${enrollmentId}`);
+  return axiosClient.delete(`/api/v1/enrollments/${enrollmentId}`);
 };
 
 export const togglePin = (enrollmentId) => {
-  return axiosClient.patch(`/enrollments/${enrollmentId}/pin`);
+  return axiosClient.patch(`/api/v1/enrollments/${enrollmentId}/pin`);
 };

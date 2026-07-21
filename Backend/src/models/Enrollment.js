@@ -18,6 +18,23 @@ const enrollmentSchema = new mongoose.Schema({
     isPinned: {
         type: Boolean,
         default: false
+    },
+    status: {
+        type: String,
+        enum: ['active', 'completed', 'expired'],
+        default: 'active'
+    },
+    expiresAt: {
+        type: Date,
+        default: null
+    },
+    completedAt: {
+        type: Date,
+        default: null
+    },
+    completionPercent: {
+        type: Number,
+        default: 0
     }
 });
 

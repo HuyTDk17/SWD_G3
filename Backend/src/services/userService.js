@@ -155,6 +155,14 @@ const userService = {
       await userRepository.updateById(application.userId._id, { role: ROLES.TEACHER });
     }
 
+    // Send application notification (Step 11 integration)
+    const notificationService = require('./notificationService');
+    const title = decision === APPLICATION_STATUS.APPROVED ? 'Teacher Application Approved! 🎉' : 'Teacher Application Update';
+    const message = decision === APPLICATION_STATUS.APPROVED 
+      ? 'Congratulations! Your teacher application has been approved. You are now a Teacher in the platform.'
+      : `Your teacher application was reviewed. Feedback: ${adminFeedback || 'None'}`;
+    await notificationService.createNotification(application.userId._id, title, message, 'application');
+
     return updated;
   },
 

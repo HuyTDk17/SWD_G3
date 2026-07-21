@@ -1,14 +1,20 @@
 const express = require('express');
 const enrollmentRouter = express.Router();
-const { enroll, getAllEnrollments, getEnrolledCourses, togglePin, unenroll } = require('../controllers/enrollment');
+const { enroll, getAllEnrollments, getMyEnrollments, getEnrolledCourses, togglePin, unenroll } = require('../controllers/enrollment');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-// Các route cụ thể phải đặt TRƯỚC route động /:id
+// Get all enrollments (Admin check can be added, but keep accessible as needed)
 enrollmentRouter.get('/', getAllEnrollments);
-enrollmentRouter.post('/enroll', enroll);
 
-// Route động đặt SAU
+// Student actions
+enrollmentRouter.post('/enroll', authMiddleware, enroll);
+enrollmentRouter.get('/my', authMiddleware, getMyEnrollments);
+
+// Backward compatibility/direct studentId requests
 enrollmentRouter.get('/student/:studentId', getEnrolledCourses);
-enrollmentRouter.patch('/:id/pin', togglePin);
-enrollmentRouter.delete('/:id', unenroll);
+
+// Pinning & Unenrollment
+enrollmentRouter.patch('/:id/pin', authMiddleware, togglePin);
+enrollmentRouter.delete('/:id', authMiddleware, unenroll);
 
 module.exports = enrollmentRouter;

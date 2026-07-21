@@ -215,13 +215,33 @@ const quizService = {
 
       // Find student answer
       const sa = studentAnswers.find(item => item.questionId.toString() === q._id.toString());
-      const studentVal = sa ? sa.value.trim().toLowerCase() : '';
-      const correctVal = q.correctAnswer ? q.correctAnswer.toString().trim().toLowerCase() : '';
+      const studentVal = sa ? sa.value.trim() : '';
 
-      const isCorrect = studentVal === correctVal;
-      if (isCorrect) {
-        earnedPoints += q.points;
+      let isCorrect = false;
+      let qEarned = 0;
+      let feedbackComment = '';
+
+      if (q.type === 'speaking' || q.type === 'open_ended') {
+        // AI Grading (FR-QUIZ-006 / Step 12 Integration)
+        const geminiClient = require('../utils/geminiClient');
+        try {
+          const aiGrading = await geminiClient.gradeSpeakingOrOpenEnded(q.prompt, q.correctAnswer, studentVal);
+          isCorrect = aiGrading.isPassed;
+          qEarned = Math.round((aiGrading.score / 100) * q.points);
+          feedbackComment = aiGrading.comment;
+        } catch (aiErr) {
+          console.error('[AI GRADER FAILURE]', aiErr);
+          // Fallback auto grade
+          isCorrect = studentVal.toLowerCase() === (q.correctAnswer || '').toString().toLowerCase();
+          qEarned = isCorrect ? q.points : 0;
+        }
+      } else {
+        const correctVal = q.correctAnswer ? q.correctAnswer.toString().trim().toLowerCase() : '';
+        isCorrect = studentVal.toLowerCase() === correctVal;
+        qEarned = isCorrect ? q.points : 0;
       }
+
+      earnedPoints += qEarned;
 
       details.push({
         questionId: q._id,
@@ -230,6 +250,9 @@ const quizService = {
         studentAnswer: sa ? sa.value : '',
         correctAnswer: q.correctAnswer,
         isCorrect,
+        pointsEarned: qEarned,
+        pointsTotal: q.points,
+        feedback: feedbackComment,
         explanation: q.explanation
       });
     }

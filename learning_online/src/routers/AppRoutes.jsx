@@ -30,6 +30,9 @@ import ProgressPage from "../pages/student/ProgressPage";
 import AdminReviewsPage from "../pages/admin/AdminReviewsPage";
 import CertificatesPage from "../pages/student/CertificatesPage";
 import VerifyCertificatePage from "../pages/VerifyCertificatePage";
+import AiAssistantPage from "../pages/student/AiAssistantPage";
+import TeacherDashboardPage from "../pages/teacher/TeacherDashboardPage";
+import AdminLayout from "../pages/admin/AdminLayout";
 
 function AppRoutes() {
   return (
@@ -54,11 +57,16 @@ function AppRoutes() {
       <Route path="/courses/:courseSlug/progress" element={<ProtectedRoute><ProgressPage /></ProtectedRoute>} />
       <Route path="/my-certificates" element={<ProtectedRoute><CertificatesPage /></ProtectedRoute>} />
       <Route path="/certificates/verify/:code" element={<VerifyCertificatePage />} />
+      <Route path="/ai-assistant" element={<ProtectedRoute><AiAssistantPage /></ProtectedRoute>} />
       
       {/* Teacher Routes */}
       <Route
         path="/teacher/courses"
         element={<RoleGuard roles={["teacher"]}><TeacherCoursesPage /></RoleGuard>}
+      />
+      <Route
+        path="/teacher/dashboard"
+        element={<RoleGuard roles={["teacher"]}><TeacherDashboardPage /></RoleGuard>}
       />
       <Route
         path="/teacher/courses/new"
@@ -108,6 +116,10 @@ function AppRoutes() {
       <Route
         path="/admin/reviews"
         element={<RoleGuard roles={["admin"]}><AdminReviewsPage /></RoleGuard>}
+      />
+      <Route
+        path="/admin/dashboard"
+        element={<RoleGuard roles={["admin"]}><AdminLayout /></RoleGuard>}
       />
 
       <Route path="*" element={<NotFound />} />

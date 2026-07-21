@@ -120,37 +120,36 @@ function Navbar() {
 
             {!loading && isAuthenticated && (
               <>
-                <Button component={RouterLink} to="/dashboard" color="inherit">
-                  Dashboard
-                </Button>
-                <Button component={RouterLink} to="/my-courses" color="inherit">
-                  My Courses
-                </Button>
                 {user?.role === "student" && (
-                  <Button component={RouterLink} to="/teacher-application" color="inherit">
-                    Become a Teacher
-                  </Button>
-                )}
-                {user?.role === "teacher" && (
-                  <Button component={RouterLink} to="/teacher/courses" color="inherit">
-                    Teacher Dashboard
-                  </Button>
-                )}
-                {user?.role === "admin" && (
                   <>
-                    <Button component={RouterLink} to="/admin/users" color="inherit">
-                      Users
+                    <Button component={RouterLink} to="/dashboard" color="inherit">
+                      Dashboard
                     </Button>
-                    <Button component={RouterLink} to="/admin/teacher-applications" color="inherit">
-                      Applications
+                    <Button component={RouterLink} to="/my-courses" color="inherit">
+                      My Courses
                     </Button>
-                    <Button component={RouterLink} to="/admin/courses" color="inherit">
-                      Approve Courses
+                    <Button component={RouterLink} to="/ai-assistant" color="inherit">
+                      AI Assistant
                     </Button>
-                    <Button component={RouterLink} to="/admin/reviews" color="inherit">
-                      Reviews
+                    <Button component={RouterLink} to="/teacher-application" color="inherit">
+                      Become a Teacher
                     </Button>
                   </>
+                )}
+                {user?.role === "teacher" && (
+                  <>
+                    <Button component={RouterLink} to="/teacher/dashboard" color="inherit">
+                      Teacher Dashboard
+                    </Button>
+                    <Button component={RouterLink} to="/teacher/courses" color="inherit">
+                      My Courses
+                    </Button>
+                  </>
+                )}
+                {user?.role === "admin" && (
+                  <Button component={RouterLink} to="/admin/dashboard" color="inherit">
+                    Admin Workspace
+                  </Button>
                 )}
 
                 {/* Notifications Bell (Step 11) */}

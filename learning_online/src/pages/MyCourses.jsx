@@ -18,6 +18,7 @@ import {
 import PushPinIcon from "@mui/icons-material/PushPin";
 import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { resolveMediaUrl } from "../utils/media";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { getEnrolledCourses, unenrollCourse, togglePin } from "../api/enrollmentApi";
 import { useAuth } from "../contexts/AuthContext";
@@ -152,7 +153,7 @@ function MyCourses() {
                   <CardMedia
                     component="img"
                     height="180"
-                    image={course.image || "https://via.placeholder.com/350x180?text=No+Thumbnail"}
+                    image={resolveMediaUrl(course.thumbnailAssetId?.url || course.image) || "https://via.placeholder.com/350x180?text=No+Thumbnail"}
                     alt={course.title}
                   />
 

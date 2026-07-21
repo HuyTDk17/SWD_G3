@@ -26,6 +26,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import courseService from "../../services/courseService";
+import { resolveMediaUrl } from "../../utils/media";
 
 function AdminCoursesPage() {
   const [courses, setCourses] = useState([]);
@@ -147,7 +148,7 @@ function AdminCoursesPage() {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Box
                         component="img"
-                        src={course.image || "https://via.placeholder.com/80x45?text=No+Img"}
+                        src={resolveMediaUrl(course.thumbnailAssetId?.url || course.image) || "https://via.placeholder.com/80x45?text=No+Img"}
                         sx={{ width: 80, height: 45, borderRadius: 1, objectFit: "cover" }}
                       />
                       <Box>

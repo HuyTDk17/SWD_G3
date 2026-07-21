@@ -32,7 +32,7 @@ const dashboardService = {
       .lean();
 
     const formattedCourses = recentCourses.map(course => {
-      const prog = progressList.find(p => p.courseId.toString() === course._id.toString());
+      const prog = progressList.find(p => p.courseId && p.courseId.toString() === course._id.toString());
       return {
         ...course,
         completionPercent: prog ? prog.completionPercent : 0,

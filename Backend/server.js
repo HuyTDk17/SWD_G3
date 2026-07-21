@@ -23,6 +23,7 @@ app.use(cookieParser());
 connectDB();
 
 // Routes
+app.use('/uploads', express.static('uploads'));
 app.use('/', router);
 
 // Error handler

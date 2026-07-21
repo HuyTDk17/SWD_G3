@@ -24,7 +24,7 @@ const dashboardController = {
       const data = await dashboardService.getAdminDashboard();
       res.json({ success: true, data });
     } catch (error) {
-      next(next);
+      next(error);
     }
   },
 

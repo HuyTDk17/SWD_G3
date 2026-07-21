@@ -18,6 +18,7 @@ import { getCourseReviews, submitReview } from "../api/reviewApi";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EventIcon from "@mui/icons-material/Event";
 import GroupIcon from "@mui/icons-material/Group";
+import { resolveMediaUrl } from "../utils/media";
 import ListIcon from "@mui/icons-material/List";
 import courseService from "../services/courseService";
 import { enrollCourse, getEnrolledCourses } from "../api/enrollmentApi";
@@ -293,7 +294,7 @@ function CourseDetailPage() {
           <Card sx={{ borderRadius: 4, boxShadow: 3, position: "sticky", top: 20 }}>
             <Box
               component="img"
-              src={course.image || "https://via.placeholder.com/400x220?text=No+Thumbnail"}
+              src={resolveMediaUrl(course.thumbnailAssetId?.url || course.image) || "https://via.placeholder.com/400x220?text=No+Thumbnail"}
               alt={course.title}
               sx={{ width: "100%", height: 220, objectFit: "cover" }}
             />

@@ -18,7 +18,7 @@ import {
   Alert,
   Stack
 } from "@mui/material";
-import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LockIcon from "@mui/icons-material/Lock";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -250,7 +250,7 @@ function LessonPlayerPage() {
                   ) : locked ? (
                     <LockIcon color="disabled" />
                   ) : (
-                    <PlayCircleOutlineIcon color={active ? "inherit" : "primary"} />
+                    <PlayArrowIcon color={active ? "white" : "primary"} />
                   )}
                 </ListItemIcon>
                 <ListItemText

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { enrollCourse } from "../api/enrollmentApi";
 import { Box, Chip, Rating, Typography } from "@mui/material";
+import { resolveMediaUrl } from "../utils/media";
 const STUDENT_ID = "6841a1b2c3d4e5f603333331";
 
 function CourseCard({ course }) {
@@ -9,7 +10,7 @@ function CourseCard({ course }) {
   const handleEnroll = async (e) => {
     e.stopPropagation();
     try {
-      await enrollCourse({ studentId: STUDENT_ID, courseId: course._id });
+      await enrollCourse(course._id);
       alert("Đăng ký khóa học thành công!");
     } catch (error) {
       const msg = error.response?.data?.message || "Đăng ký thất bại. Vui lòng thử lại.";
@@ -24,7 +25,7 @@ function CourseCard({ course }) {
       style={{ cursor: "pointer" }}
     >
       <img
-        src={course.image || "https://via.placeholder.com/300x160?text=No+Image"}
+        src={resolveMediaUrl(course.thumbnailAssetId?.url || course.image) || "https://via.placeholder.com/300x160?text=No+Image"}
         alt={course.title}
         className="course-image"
       />

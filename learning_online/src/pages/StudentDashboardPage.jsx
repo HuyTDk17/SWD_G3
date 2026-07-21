@@ -31,6 +31,14 @@ function StudentDashboardPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (user?.role === "teacher") {
+      navigate("/teacher/dashboard", { replace: true });
+    } else if (user?.role === "admin") {
+      navigate("/admin/dashboard", { replace: true });
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
     const loadStats = async () => {
       try {
         setLoading(true);

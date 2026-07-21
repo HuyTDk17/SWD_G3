@@ -18,6 +18,7 @@ import {
   Alert
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { resolveMediaUrl } from "../../utils/media";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PublishIcon from "@mui/icons-material/Publish";
@@ -177,7 +178,7 @@ function TeacherCoursesPage() {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Box
                         component="img"
-                        src={course.image || "https://via.placeholder.com/80x45?text=No+Img"}
+                        src={resolveMediaUrl(course.thumbnailAssetId?.url || course.image) || "https://via.placeholder.com/80x45?text=No+Img"}
                         sx={{ width: 80, height: 45, borderRadius: 1, objectFit: "cover" }}
                       />
                       <Box>

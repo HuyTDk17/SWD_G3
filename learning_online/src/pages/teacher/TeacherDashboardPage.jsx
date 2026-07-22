@@ -15,8 +15,8 @@ import {
   TableHead,
   TableRow,
   Button,
-  Divider,
-  CircularProgress
+  CircularProgress,
+  Alert
 } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
 import StarIcon from "@mui/icons-material/Star";
@@ -67,10 +67,16 @@ function TeacherDashboardPage() {
         </Typography>
       </Box>
 
+      {error && (
+        <Alert severity="error" sx={{ mb: 4 }}>
+          {error}
+        </Alert>
+      )}
+
       {/* KPI Cards */}
       {stats && (
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Box sx={{ p: 1.5, bgcolor: "primary.light", color: "primary.main", borderRadius: 2 }}>
@@ -84,7 +90,7 @@ function TeacherDashboardPage() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Box sx={{ p: 1.5, bgcolor: "success.light", color: "success.main", borderRadius: 2 }}>
@@ -98,7 +104,7 @@ function TeacherDashboardPage() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Box sx={{ p: 1.5, bgcolor: "warning.light", color: "warning.main", borderRadius: 2 }}>
@@ -112,7 +118,7 @@ function TeacherDashboardPage() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Box sx={{ p: 1.5, bgcolor: "error.light", color: "error.main", borderRadius: 2 }}>

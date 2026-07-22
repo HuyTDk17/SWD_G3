@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server",
-    "seed": "node seedRoles.js"
+    "seed": "node seedUsers.js"
   },
   "keywords": [
     "nodejs",

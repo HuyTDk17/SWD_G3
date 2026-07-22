@@ -11,7 +11,9 @@ import {
   Button,
   LinearProgress,
   Divider,
-  CircularProgress
+  CircularProgress,
+  Chip,
+  Alert
 } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 import SpeedIcon from "@mui/icons-material/Speed";
@@ -87,10 +89,16 @@ function StudentDashboardPage() {
         </Button>
       </Box>
 
+      {error && (
+        <Alert severity="error" sx={{ mb: 4 }}>
+          {error}
+        </Alert>
+      )}
+
       {/* KPI Cards */}
       {stats && (
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Box sx={{ p: 1.5, bgcolor: "primary.light", color: "primary.main", borderRadius: 2 }}>
@@ -104,7 +112,7 @@ function StudentDashboardPage() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Box sx={{ p: 1.5, bgcolor: "success.light", color: "success.main", borderRadius: 2 }}>
@@ -118,7 +126,7 @@ function StudentDashboardPage() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Box sx={{ p: 1.5, bgcolor: "error.light", color: "error.main", borderRadius: 2 }}>
@@ -132,7 +140,7 @@ function StudentDashboardPage() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Box sx={{ p: 1.5, bgcolor: "warning.light", color: "warning.main", borderRadius: 2 }}>
@@ -165,7 +173,7 @@ function StudentDashboardPage() {
       ) : (
         <Grid container spacing={3}>
           {stats && stats.recentCourses?.map((course) => (
-            <Grid item xs={12} md={6} key={course._id}>
+            <Grid size={{ xs: 12, md: 6 }} key={course._id}>
               <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 2, height: "100%", display: "flex", flexDirection: "column" }}>
                 <Box sx={{ flexGrow: 1 }}>
                   <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>

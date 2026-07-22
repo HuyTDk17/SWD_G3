@@ -10,7 +10,6 @@ import {
   RadioGroup,
   FormControlLabel,
   FormControl,
-  Alert,
   Card,
   CardContent,
   Stack
@@ -65,7 +64,7 @@ function QuizAttemptPage() {
   };
 
   useEffect(() => {
-    initAttempt();
+    Promise.resolve().then(() => initAttempt());
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
@@ -83,7 +82,7 @@ function QuizAttemptPage() {
 
     try {
       setSubmitting(true);
-      const result = await quizService.submitAttempt(course._id, quizId, attempt.id, answers);
+      await quizService.submitAttempt(course._id, quizId, attempt.id, answers);
       alert(isAutoSubmit ? "Time's up! Your answers were automatically submitted." : "Quiz submitted successfully!");
       navigate(`/courses/${courseSlug}/quizzes/${quizId}/results/${attempt.id}`);
     } catch (err) {

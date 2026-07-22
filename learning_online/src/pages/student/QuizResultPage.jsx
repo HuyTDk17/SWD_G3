@@ -9,9 +9,7 @@ import {
   Card,
   CardContent,
   Chip,
-  Divider,
-  Stack,
-  Alert
+  Stack
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -23,7 +21,6 @@ function QuizResultPage() {
   const { courseSlug, quizId, attemptId } = useParams();
   const navigate = useNavigate();
 
-  const [course, setCourse] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,7 +32,6 @@ function QuizResultPage() {
         setError(null);
 
         const courseData = await courseService.getCourseBySlug(courseSlug);
-        setCourse(courseData);
 
         const data = await quizService.getAttemptResult(courseData._id, quizId, attemptId);
         setResult(data);
@@ -126,9 +122,6 @@ function QuizResultPage() {
 
       <Stack spacing={4}>
         {details.map((q, index) => {
-          const studentOption = q.options.find(o => o.id === q.studentAnswer);
-          const correctOption = q.options.find(o => o.id === q.correctAnswer);
-
           return (
             <Card
               key={q.questionId}

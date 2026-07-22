@@ -35,7 +35,8 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
   const [thumbnailAsset, setThumbnailAsset] = useState(null);
 
   useEffect(() => {
-    if (initialData) {
+    const syncFromInitialData = () => {
+      if (!initialData) return;
       setForm({
         title: initialData.title || "",
         description: initialData.description || "",
@@ -62,7 +63,9 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           sizeBytes: 0
         });
       }
-    }
+    };
+
+    Promise.resolve().then(syncFromInitialData);
   }, [initialData]);
 
   const handleChange = (e) => {
@@ -107,7 +110,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
       )}
 
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <TextField
             name="title"
             label="Course Title"
@@ -118,7 +121,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <TextField
             name="description"
             label="Description"
@@ -131,7 +134,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           />
         </Grid>
 
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             select
             name="language"
@@ -148,7 +151,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           </TextField>
         </Grid>
 
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             select
             name="cefrLevel"
@@ -165,7 +168,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           </TextField>
         </Grid>
 
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             select
             name="category"
@@ -182,7 +185,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           </TextField>
         </Grid>
 
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             name="price"
             label="Price ($)"
@@ -195,7 +198,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           />
         </Grid>
 
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             name="capacity"
             label="Capacity (unlimited if empty)"
@@ -207,7 +210,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           />
         </Grid>
 
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             name="durationDays"
             label="Duration (days - optional)"
@@ -219,7 +222,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             name="lessonCount"
             label="Mock Lessons Count (At least 3 to submit)"
@@ -232,7 +235,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} sx={{ display: "flex", alignItems: "center" }}>
+        <Grid size={{ xs: 12, sm: 6 }} sx={{ display: "flex", alignItems: "center" }}>
           <FormControlLabel
             control={
               <Checkbox
@@ -246,7 +249,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Box sx={{ border: "1px dashed #ccc", p: 2, borderRadius: 2 }}>
             <MediaUpload
               label="Upload Course Thumbnail"

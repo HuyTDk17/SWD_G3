@@ -70,7 +70,7 @@ function LessonManagementPage() {
   };
 
   useEffect(() => {
-    loadData();
+    Promise.resolve().then(() => loadData());
   }, [courseId]);
 
   const handleMove = async (index, direction) => {

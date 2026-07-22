@@ -12,7 +12,6 @@ import {
   TableRow,
   Paper,
   Button,
-  Chip,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -55,7 +54,7 @@ function AdminCoursesPage() {
   };
 
   useEffect(() => {
-    loadPendingCourses();
+    Promise.resolve().then(() => loadPendingCourses());
   }, []);
 
   const handleApprove = async (id) => {

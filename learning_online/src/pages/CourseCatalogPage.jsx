@@ -14,8 +14,7 @@ import {
   CardContent,
   IconButton,
   InputAdornment,
-  Pagination,
-  Slider
+  Pagination
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
@@ -71,7 +70,7 @@ function CourseCatalogPage() {
   };
 
   useEffect(() => {
-    loadCourses();
+    Promise.resolve().then(() => loadCourses());
   }, [page, search, language, cefrLevel, category, sortBy]);
 
   const handleSearchSubmit = (e) => {
@@ -113,7 +112,7 @@ function CourseCatalogPage() {
 
       <Grid container spacing={3}>
         {/* Sidebar Filters */}
-        <Grid item xs={12} md={3}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <Card sx={{ borderRadius: 3, boxShadow: 2, position: "sticky", top: 20 }}>
             <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
@@ -200,7 +199,7 @@ function CourseCatalogPage() {
         </Grid>
 
         {/* Catalog Main Panel */}
-        <Grid item xs={12} md={9}>
+        <Grid size={{ xs: 12, md: 9 }}>
           {/* Search bar */}
           <Box component="form" onSubmit={handleSearchSubmit} sx={{ mb: 3 }}>
             <TextField

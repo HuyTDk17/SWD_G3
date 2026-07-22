@@ -90,7 +90,7 @@ function CertificatesPage() {
       ) : (
         <Grid container spacing={3}>
           {certs.map((cert) => (
-            <Grid item xs={12} key={cert._id}>
+            <Grid size={{ xs: 12 }} key={cert._id}>
               <Card sx={{ display: "flex", p: 2, borderRadius: 3, boxShadow: 2, borderLeft: "6px solid #d4af37" }}>
                 <Box sx={{ display: "flex", alignItems: "center", justifyItems: "center", p: 2 }}>
                   <WorkspacePremiumIcon sx={{ fontSize: 50, color: "#d4af37" }} />

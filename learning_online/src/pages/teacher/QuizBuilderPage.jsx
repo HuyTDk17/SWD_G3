@@ -42,8 +42,6 @@ function QuizBuilderPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
-  // Temp option text variables for building a question options list
-  const [activeQuestionIndex, setActiveQuestionIndex] = useState(null);
 
   useEffect(() => {
     const loadLessons = async () => {
@@ -231,7 +229,7 @@ function QuizBuilderPage() {
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Grid container spacing={3}>
             {/* Title */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 name="title"
                 label="Quiz Title"
@@ -243,7 +241,7 @@ function QuizBuilderPage() {
             </Grid>
 
             {/* Configs */}
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 name="timeLimitMinutes"
                 label="Time Limit (minutes - optional)"
@@ -254,7 +252,7 @@ function QuizBuilderPage() {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 name="maxAttempts"
                 label="Max Attempts"
@@ -266,7 +264,7 @@ function QuizBuilderPage() {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 name="passingScore"
                 label="Passing Score (%)"
@@ -279,7 +277,7 @@ function QuizBuilderPage() {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 name="lessonId"
@@ -296,7 +294,7 @@ function QuizBuilderPage() {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 name="status"
@@ -311,7 +309,7 @@ function QuizBuilderPage() {
             </Grid>
 
             {/* Questions builder */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Divider sx={{ my: 3 }} />
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
                 <Typography variant="h6" sx={{ fontWeight: 800 }}>
@@ -347,7 +345,7 @@ function QuizBuilderPage() {
 
                         <Grid container spacing={2}>
                           {/* Question Prompt */}
-                          <Grid item xs={12} sm={9}>
+                          <Grid size={{ xs: 12, sm: 9 }}>
                             <TextField
                               label="Question Prompt"
                               fullWidth
@@ -358,7 +356,7 @@ function QuizBuilderPage() {
                             />
                           </Grid>
                           {/* Points */}
-                          <Grid item xs={12} sm={3}>
+                          <Grid size={{ xs: 12, sm: 3 }}>
                             <TextField
                               label="Points"
                               type="number"
@@ -373,7 +371,7 @@ function QuizBuilderPage() {
 
                           {/* Options Builder */}
                           {q.options.map((opt, oIndex) => (
-                            <Grid item xs={12} sm={6} key={opt.id}>
+                            <Grid size={{ xs: 12, sm: 6 }} key={opt.id}>
                               <TextField
                                 label={`Option ${opt.id.toUpperCase()}`}
                                 fullWidth
@@ -386,7 +384,7 @@ function QuizBuilderPage() {
                           ))}
 
                           {/* Correct Answer Selection */}
-                          <Grid item xs={12} sm={6}>
+                          <Grid size={{ xs: 12, sm: 6 }}>
                             <TextField
                               select
                               label="Correct Answer Option"
@@ -403,7 +401,7 @@ function QuizBuilderPage() {
                           </Grid>
 
                           {/* Explanation */}
-                          <Grid item xs={12} sm={6}>
+                          <Grid size={{ xs: 12, sm: 6 }}>
                             <TextField
                               label="Explanation (optional)"
                               fullWidth

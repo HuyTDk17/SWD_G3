@@ -227,7 +227,7 @@ function LessonEditorPage() {
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Grid container spacing={3}>
             {/* Title */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 name="title"
                 label="Lesson Title"
@@ -239,7 +239,7 @@ function LessonEditorPage() {
             </Grid>
 
             {/* Description */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 name="description"
                 label="Brief Summary/Description"
@@ -252,7 +252,7 @@ function LessonEditorPage() {
             </Grid>
 
             {/* Estimated Minutes & Status */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 name="estimatedMinutes"
                 label="Estimated Duration (minutes)"
@@ -264,7 +264,7 @@ function LessonEditorPage() {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 name="status"
@@ -279,7 +279,7 @@ function LessonEditorPage() {
             </Grid>
 
             {/* Content Types Checkboxes */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <FormLabel component="legend" sx={{ mb: 1, fontWeight: 600 }}>
                 Lesson Content Sections
               </FormLabel>
@@ -309,7 +309,7 @@ function LessonEditorPage() {
 
             {/* Conditional Rich Text Area */}
             {form.contentType.includes("text") && (
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   name="textContent"
                   label="Rich Text Instruction (Markdown supported)"
@@ -325,7 +325,7 @@ function LessonEditorPage() {
 
             {/* Conditional Grammar Notes */}
             {form.contentType.includes("grammar") && (
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   name="grammarNotes"
                   label="Grammar Notes"
@@ -341,7 +341,7 @@ function LessonEditorPage() {
 
             {/* Conditional Video / Audio Uploads */}
             {form.contentType.includes("video") && (
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Box sx={{ border: "1px dashed #ccc", p: 2, borderRadius: 2 }}>
                   <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 700 }}>
                     Video Attachment
@@ -358,7 +358,7 @@ function LessonEditorPage() {
             )}
 
             {form.contentType.includes("audio") && (
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Box sx={{ border: "1px dashed #ccc", p: 2, borderRadius: 2 }}>
                   <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 700 }}>
                     Audio Attachment
@@ -375,7 +375,7 @@ function LessonEditorPage() {
             )}
 
             {/* Resource Files (PDF) */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Box sx={{ border: "1px dashed #ccc", p: 2, borderRadius: 2 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 700 }}>
                   Supplemental Resources (PDF)
@@ -393,7 +393,7 @@ function LessonEditorPage() {
 
             {/* Conditional Vocabulary List Builder */}
             {form.contentType.includes("vocabulary") && (
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
                   Vocabulary Builder
@@ -420,7 +420,7 @@ function LessonEditorPage() {
                 )}
 
                 <Grid container spacing={2} alignItems="center">
-                  <Grid item xs={12} sm={4}>
+                  <Grid size={{ xs: 12, sm: 4 }}>
                     <TextField
                       label="Word/Phrase"
                       size="small"
@@ -429,7 +429,7 @@ function LessonEditorPage() {
                       onChange={(e) => setNewVocab(prev => ({ ...prev, word: e.target.value }))}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  <Grid size={{ xs: 12, sm: 4 }}>
                     <TextField
                       label="Translation"
                       size="small"
@@ -438,7 +438,7 @@ function LessonEditorPage() {
                       onChange={(e) => setNewVocab(prev => ({ ...prev, translation: e.target.value }))}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={3}>
+                  <Grid size={{ xs: 12, sm: 3 }}>
                     <TextField
                       label="Pronunciation"
                       size="small"
@@ -447,7 +447,7 @@ function LessonEditorPage() {
                       onChange={(e) => setNewVocab(prev => ({ ...prev, pronunciation: e.target.value }))}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={1}>
+                  <Grid size={{ xs: 12, sm: 1 }}>
                     <IconButton color="primary" onClick={handleAddVocab}>
                       <AddIcon />
                     </IconButton>

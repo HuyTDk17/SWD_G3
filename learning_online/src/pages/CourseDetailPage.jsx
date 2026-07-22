@@ -12,6 +12,7 @@ import {
   Rating,
   Divider,
   Paper,
+  Stack,
   TextField
 } from "@mui/material";
 import { getCourseReviews, submitReview } from "../api/reviewApi";
@@ -24,7 +25,6 @@ import courseService from "../services/courseService";
 import { enrollCourse, getEnrolledCourses } from "../api/enrollmentApi";
 import { useAuth } from "../contexts/AuthContext";
 
-const HARDCODED_STUDENT_ID = "6841a1b2c3d4e5f603333331";
 
 function CourseDetailPage() {
   const { slug } = useParams();
@@ -156,7 +156,7 @@ function CourseDetailPage() {
 
       <Grid container spacing={4}>
         {/* Main Content (Left) */}
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Box sx={{ mb: 3 }}>
             <Typography variant="h3" component="h1" sx={{ fontWeight: 800, mb: 2 }}>
               {course.title}
@@ -290,7 +290,7 @@ function CourseDetailPage() {
         </Grid>
 
         {/* Sidebar Panel (Right) */}
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ borderRadius: 4, boxShadow: 3, position: "sticky", top: 20 }}>
             <Box
               component="img"

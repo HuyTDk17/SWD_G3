@@ -40,13 +40,15 @@ function Navbar() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchNotifications();
+      Promise.resolve().then(() => fetchNotifications());
       // Auto-poll notifications every 30 seconds for real-time alerts
       const interval = setInterval(fetchNotifications, 30000);
       return () => clearInterval(interval);
     } else {
-      setNotifications([]);
-      setUnreadCount(0);
+      Promise.resolve().then(() => {
+        setNotifications([]);
+        setUnreadCount(0);
+      });
     }
   }, [isAuthenticated]);
 

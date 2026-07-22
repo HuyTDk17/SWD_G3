@@ -40,7 +40,7 @@ function AdminReviewsPage() {
   };
 
   useEffect(() => {
-    loadPending();
+    Promise.resolve().then(() => loadPending());
   }, []);
 
   const handleModerate = async (reviewId, status) => {

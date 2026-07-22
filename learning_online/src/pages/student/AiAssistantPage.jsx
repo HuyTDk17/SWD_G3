@@ -42,6 +42,22 @@ function AiAssistantPage() {
 
   const chatEndRef = useRef(null);
 
+  const handleSelectSession = async (id) => {
+    try {
+      setLoadingMessages(true);
+      const res = await getAiSession(id);
+      const session = res.data.data;
+      setActiveSession(session);
+      // Filter out system prompts for user display comfort
+      setMessages(session.messages.filter(m => m.role !== "system"));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load session message history.");
+    } finally {
+      setLoadingMessages(false);
+    }
+  };
+
   const loadQuotaAndSessions = async () => {
     try {
       setLoadingSessions(true);
@@ -62,28 +78,12 @@ function AiAssistantPage() {
   };
 
   useEffect(() => {
-    loadQuotaAndSessions();
+    Promise.resolve().then(() => loadQuotaAndSessions());
   }, []);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  const handleSelectSession = async (id) => {
-    try {
-      setLoadingMessages(true);
-      const res = await getAiSession(id);
-      const session = res.data.data;
-      setActiveSession(session);
-      // Filter out system prompts for user display comfort
-      setMessages(session.messages.filter(m => m.role !== "system"));
-    } catch (err) {
-      console.error(err);
-      alert("Failed to load session message history.");
-    } finally {
-      setLoadingMessages(false);
-    }
-  };
 
   const handleCreateSession = async () => {
     try {
@@ -164,7 +164,7 @@ function AiAssistantPage() {
 
       <Grid container spacing={3} sx={{ height: "70vh" }}>
         {/* Left Sidebar - Session Controls */}
-        <Grid item xs={12} md={4} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        <Grid size={{ xs: 12, md: 4 }} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
           <Paper sx={{ p: 2, mb: 2, borderRadius: 3 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5 }}>
               Start New Practice Session
@@ -228,7 +228,7 @@ function AiAssistantPage() {
         </Grid>
 
         {/* Right main panel - Chat Window */}
-        <Grid item xs={12} md={8} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        <Grid size={{ xs: 12, md: 8 }} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
           <Paper sx={{ flexGrow: 1, display: "flex", flexDirection: "column", p: 2, borderRadius: 3, overflow: "hidden" }}>
             {activeSession ? (
               <>

@@ -55,7 +55,7 @@ function TeacherCoursesPage() {
 
   useEffect(() => {
     if (user) {
-      loadCourses();
+      Promise.resolve().then(() => loadCourses());
     }
   }, [user]);
 

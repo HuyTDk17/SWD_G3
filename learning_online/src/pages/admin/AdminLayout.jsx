@@ -28,7 +28,6 @@ import DownloadIcon from "@mui/icons-material/Download";
 import PeopleIcon from "@mui/icons-material/People";
 import BookIcon from "@mui/icons-material/Book";
 import HelpIcon from "@mui/icons-material/Help";
-import StarIcon from "@mui/icons-material/Star";
 
 // API imports
 import { getAdminDashboard, getAdminCSVExportUrl } from "../../api/dashboardApi";
@@ -68,7 +67,7 @@ function AdminLayout() {
   };
 
   useEffect(() => {
-    loadDashboard();
+    Promise.resolve().then(() => loadDashboard());
   }, []);
 
   const loadConfigs = async () => {
@@ -95,9 +94,9 @@ function AdminLayout() {
 
   useEffect(() => {
     if (tab === 5) {
-      loadConfigs();
+      Promise.resolve().then(() => loadConfigs());
     } else if (tab === 6) {
-      loadLogs(logPage);
+      Promise.resolve().then(() => loadLogs(logPage));
     }
   }, [tab, logPage]);
 
@@ -187,7 +186,7 @@ function AdminLayout() {
       {tab === 0 && stats && (
         <Box>
           <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
                 <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ p: 1.5, bgcolor: "primary.light", color: "primary.main", borderRadius: 2 }}>
@@ -201,7 +200,7 @@ function AdminLayout() {
               </Card>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
                 <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ p: 1.5, bgcolor: "success.light", color: "success.main", borderRadius: 2 }}>
@@ -215,7 +214,7 @@ function AdminLayout() {
               </Card>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
                 <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ p: 1.5, bgcolor: "warning.light", color: "warning.main", borderRadius: 2 }}>
@@ -229,7 +228,7 @@ function AdminLayout() {
               </Card>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
                 <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ p: 1.5, bgcolor: "error.light", color: "error.main", borderRadius: 2 }}>

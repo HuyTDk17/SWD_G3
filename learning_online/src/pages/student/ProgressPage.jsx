@@ -8,7 +8,6 @@ import {
   Grid,
   Card,
   CardContent,
-  LinearProgress,
   List,
   ListItem,
   ListItemIcon,
@@ -108,7 +107,7 @@ function ProgressPage() {
 
       <Grid container spacing={4} sx={{ mb: 6 }}>
         {/* Radial Completion Percentage Chart */}
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Paper
             elevation={3}
             sx={{
@@ -157,10 +156,10 @@ function ProgressPage() {
         </Grid>
 
         {/* Study Stats Grid */}
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Grid container spacing={3}>
             {/* Lessons Stats */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
                 <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ p: 1.5, bgcolor: "primary.light", borderRadius: 2, color: "primary.main" }}>
@@ -179,7 +178,7 @@ function ProgressPage() {
             </Grid>
 
             {/* Quizzes Stats */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
                 <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ p: 1.5, bgcolor: "warning.light", borderRadius: 2, color: "warning.main" }}>
@@ -198,7 +197,7 @@ function ProgressPage() {
             </Grid>
 
             {/* Streak Card */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
                 <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ p: 1.5, bgcolor: "error.light", borderRadius: 2, color: "error.main" }}>
@@ -217,7 +216,7 @@ function ProgressPage() {
             </Grid>
 
             {/* Last Studied Date */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Card sx={{ borderRadius: 3, boxShadow: 1 }}>
                 <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ p: 1.5, bgcolor: "success.light", borderRadius: 2, color: "success.main" }}>
@@ -241,7 +240,7 @@ function ProgressPage() {
       {/* Curriculum checklists */}
       <Grid container spacing={4}>
         {/* Lessons checklist */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Paper sx={{ p: 3, borderRadius: 4 }}>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
               Lessons Progress
@@ -287,7 +286,7 @@ function ProgressPage() {
         </Grid>
 
         {/* Quizzes Checklist */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Paper sx={{ p: 3, borderRadius: 4 }}>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
               Quizzes Progress

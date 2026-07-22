@@ -13,7 +13,8 @@ import {
   Chip,
   IconButton,
   Tooltip,
-  Alert
+  Alert,
+  Paper
 } from "@mui/material";
 import PushPinIcon from "@mui/icons-material/PushPin";
 import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
@@ -47,7 +48,7 @@ function MyCourses() {
 
   useEffect(() => {
     if (user) {
-      loadData();
+      Promise.resolve().then(() => loadData());
     }
   }, [user]);
 
@@ -119,7 +120,7 @@ function MyCourses() {
             const isExpired = item.status === "expired" || (item.expiresAt && new Date(item.expiresAt) < new Date());
 
             return (
-              <Grid item xs={12} sm={6} md={4} key={item._id}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item._id}>
                 <Card
                   sx={{
                     height: "100%",

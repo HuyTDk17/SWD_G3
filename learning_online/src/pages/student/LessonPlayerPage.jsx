@@ -86,7 +86,7 @@ function LessonPlayerPage() {
   };
 
   useEffect(() => {
-    loadCourseAndLessons();
+    Promise.resolve().then(() => loadCourseAndLessons());
   }, [courseSlug]);
 
   const loadLessonDetail = async (lesson) => {
@@ -107,7 +107,7 @@ function LessonPlayerPage() {
 
   useEffect(() => {
     if (activeLesson && course) {
-      loadLessonDetail(activeLesson);
+      Promise.resolve().then(() => loadLessonDetail(activeLesson));
     }
   }, [activeLesson, course]);
 
@@ -398,7 +398,7 @@ function LessonPlayerPage() {
                 </Box>
                 <Grid container spacing={2}>
                   {activeLessonDetail.vocabulary.map((v, idx) => (
-                    <Grid item xs={12} sm={6} key={idx}>
+                    <Grid size={{ xs: 12, sm: 6 }} key={idx}>
                       <Card variant="outlined" sx={{ borderRadius: 2, height: "100%" }}>
                         <CardContent>
                           <Typography variant="h6" color="primary" sx={{ fontWeight: 800 }}>

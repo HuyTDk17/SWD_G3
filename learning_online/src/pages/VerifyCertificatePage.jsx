@@ -6,8 +6,7 @@ import {
   Typography,
   Box,
   Button,
-  Divider,
-  Alert
+  Divider
 } from "@mui/material";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";

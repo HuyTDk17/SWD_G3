@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { enrollCourse } from "../api/enrollmentApi";
 import { Box, Chip, Rating, Typography } from "@mui/material";
 import { resolveMediaUrl } from "../utils/media";
-const STUDENT_ID = "6841a1b2c3d4e5f603333331";
 
 function CourseCard({ course }) {
   const navigate = useNavigate();

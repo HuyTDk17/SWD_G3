@@ -1,7 +1,7 @@
 import { API_BASE_URL } from "../config/env";
 
 export const resolveMediaUrl = (url) => {
-  if (!url) return "";
+  if (!url || typeof url !== "string") return "";
   if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) {
     return url;
   }

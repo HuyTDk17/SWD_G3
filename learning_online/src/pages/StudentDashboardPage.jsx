@@ -11,9 +11,7 @@ import {
   Button,
   LinearProgress,
   Divider,
-  CircularProgress,
-  Chip,
-  Alert
+  CircularProgress
 } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 import SpeedIcon from "@mui/icons-material/Speed";
@@ -67,6 +65,11 @@ function StudentDashboardPage() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
       {/* Top Banner section */}
       <Box sx={{ mb: 4, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 2 }}>
         <Box>
@@ -160,7 +163,7 @@ function StudentDashboardPage() {
       <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
         My Enrolled Courses Progress
       </Typography>
-      
+
       {stats && stats.recentCourses?.length === 0 ? (
         <Paper sx={{ p: 6, textAlign: "center", borderRadius: 3 }}>
           <Typography color="text.secondary" sx={{ mb: 2 }}>

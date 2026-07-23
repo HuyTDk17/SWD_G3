@@ -28,7 +28,7 @@ function ForgotPasswordPage() {
 
     try {
       await forgotPassword({ email });
-      setMessage('If the email exists, a reset OTP has been sent. Development OTP: 123456');
+      setMessage('If the email exists, a reset OTP has been sent to it.');
       setTimeout(() => navigate('/reset-password', { state: { email } }), 1000);
     } catch (err) {
       setError(authService.getErrorMessage(err));

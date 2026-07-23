@@ -21,9 +21,8 @@ import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
 import courseService from "../services/courseService";
 import CourseCard from "../components/CourseCard";
 
-const LANGUAGES = ["English", "Vietnamese", "French", "Spanish", "Chinese", "Japanese", "Korean"];
 const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
-const CATEGORIES = ["Programming", "Mobile", "Web", "Languages", "Business", "General"];
+const CATEGORIES = ["Programming Fundamentals", "Frontend", "Backend", "Database", "DevOps", "Mobile"];
 
 function CourseCatalogPage() {
   const [courses, setCourses] = useState([]);
@@ -106,7 +105,7 @@ function CourseCatalogPage() {
           Discover Courses
         </Typography>
         <Typography variant="h6" sx={{ opacity: 0.9 }}>
-          Master new languages and skills with expert-led courses.
+          Master programming languages and frameworks with expert-led courses.
         </Typography>
       </Box>
 
@@ -124,27 +123,12 @@ function CourseCatalogPage() {
                 </IconButton>
               </Box>
 
-              {/* Language filter */}
+              {/* Level filter */}
               <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-                <InputLabel>Language</InputLabel>
-                <Select
-                  value={language}
-                  label="Language"
-                  onChange={(e) => { setLanguage(e.target.value); setPage(1); }}
-                >
-                  <MenuItem value=""><em>All Languages</em></MenuItem>
-                  {LANGUAGES.map((l) => (
-                    <MenuItem key={l} value={l}>{l}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/* CEFR Level filter */}
-              <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-                <InputLabel>CEFR Level</InputLabel>
+                <InputLabel>Level</InputLabel>
                 <Select
                   value={cefrLevel}
-                  label="CEFR Level"
+                  label="Level"
                   onChange={(e) => { setCefrLevel(e.target.value); setPage(1); }}
                 >
                   <MenuItem value=""><em>All Levels</em></MenuItem>

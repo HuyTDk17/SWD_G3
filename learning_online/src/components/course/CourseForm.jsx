@@ -14,7 +14,7 @@ import MediaUpload from "../media/MediaUpload";
 
 const LANGUAGES = ["English", "Vietnamese", "French", "Spanish", "Chinese", "Japanese", "Korean"];
 const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
-const CATEGORIES = ["Programming", "Mobile", "Web", "Languages", "Business", "General"];
+const CATEGORIES = ["Programming Fundamentals", "Frontend", "Backend", "Database", "DevOps", "Mobile"];
 
 function CourseForm({ initialData = null, onSubmit, saving, error }) {
   const [form, setForm] = useState({
@@ -155,7 +155,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
           <TextField
             select
             name="cefrLevel"
-            label="CEFR Level"
+            label="Level"
             fullWidth
             value={form.cefrLevel}
             onChange={handleChange}

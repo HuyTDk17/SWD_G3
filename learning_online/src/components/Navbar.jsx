@@ -110,7 +110,7 @@ function Navbar() {
             variant="h6"
             sx={{ textDecoration: "none", color: "primary.main", fontWeight: 700 }}
           >
-            Language Learning
+            CodeLearn
           </Typography>
 
           <Box sx={{ flexGrow: 1 }} />

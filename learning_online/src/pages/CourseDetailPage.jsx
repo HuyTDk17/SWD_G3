@@ -165,7 +165,7 @@ function CourseDetailPage() {
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
               <Chip label={course.category} color="primary" />
               <Chip label={`Language: ${course.language}`} variant="outlined" />
-              <Chip label={`CEFR: ${course.cefrLevel}`} variant="outlined" color="secondary" />
+              <Chip label={`Level: ${course.cefrLevel}`} variant="outlined" color="secondary" />
               {course.status !== "published" && (
                 <Chip label={`Status: ${course.status.toUpperCase()}`} color="warning" />
               )}

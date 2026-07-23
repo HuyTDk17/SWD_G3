@@ -28,6 +28,13 @@ const authService = {
     return { accessToken, user };
   },
 
+  async googleLogin(credential) {
+    const response = await authApi.googleLogin(credential);
+    const { accessToken, user } = response.data.data;
+    setAccessToken(accessToken);
+    return { accessToken, user };
+  },
+
   async refresh() {
     const response = await authApi.refresh();
     const { accessToken, user } = response.data.data;

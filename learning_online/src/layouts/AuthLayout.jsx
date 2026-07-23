@@ -16,10 +16,10 @@ function AuthLayout() {
       <Container maxWidth="sm">
         <Paper elevation={2} sx={{ p: 4 }}>
           <Typography variant="h5" component="h1" gutterBottom fontWeight={600}>
-            Language Learning Platform
+            CodeLearn Platform
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Sign in or create an account to continue learning.
+            Sign in or create an account to continue coding.
           </Typography>
           <Outlet />
           <Box sx={{ mt: 3, textAlign: 'center' }}>

@@ -44,7 +44,7 @@ function VerifyOtpPage() {
     setMessage('');
     try {
       await resendOtp({ email });
-      setMessage('OTP resent. Development OTP: 123456');
+      setMessage('A new OTP has been sent to your email.');
     } catch (err) {
       setError(authService.getErrorMessage(err));
     }
@@ -53,9 +53,9 @@ function VerifyOtpPage() {
   return (
     <Box component="form" onSubmit={handleVerify}>
       <Typography variant="h6" gutterBottom>Verify email</Typography>
-      <Alert severity="info" sx={{ mb: 2 }}>
-        Development OTP is fixed to <strong>123456</strong>.
-      </Alert>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        We've sent a 6-digit code to your email. Enter it below to verify your account.
+      </Typography>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       {message && <Alert severity="success" sx={{ mb: 2 }}>{message}</Alert>}
       <Stack spacing={2}>

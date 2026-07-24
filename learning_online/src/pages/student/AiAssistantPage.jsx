@@ -25,6 +25,23 @@ import ChatIcon from "@mui/icons-material/Chat";
 import AddIcon from "@mui/icons-material/Add";
 import { getAiQuota, getAiSessions, createAiSession, getAiSession, sendAiMessage } from "../../api/aiApi";
 
+// Renders message text with plain URLs turned into clickable links,
+// so course links the AI shares can actually be opened.
+function renderMessageContent(text) {
+  const urlSplitRegex = /(https?:\/\/[^\s]+)/g;
+  const urlTestRegex = /^https?:\/\//;
+  const parts = text.split(urlSplitRegex);
+  return parts.map((part, i) =>
+    urlTestRegex.test(part) ? (
+      <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", fontWeight: 700, textDecoration: "underline" }}>
+        {part}
+      </a>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  );
+}
+
 function AiAssistantPage() {
   const [sessions, setSessions] = useState([]);
   const [activeSession, setActiveSession] = useState(null);
@@ -269,7 +286,7 @@ function AiAssistantPage() {
                               color: m.role === "user" ? "white" : "text.primary"
                             }}
                           >
-                            <Typography variant="body2">{m.content}</Typography>
+                            <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{renderMessageContent(m.content)}</Typography>
                           </Box>
                         </Box>
                       ))}

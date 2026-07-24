@@ -349,6 +349,33 @@ const courseService = {
 
     await courseRepository.deleteById(id);
     return { message: 'Course deleted successfully' };
+  },
+
+  // Builds a compact, plain-text summary of the real published course catalog
+  // so the AI Assistant can ground its answers in actual data instead of
+  // inventing course names that don't exist on the platform.
+  async getCatalogSummaryForAi() {
+    const Course = require('../models/Course');
+    const courses = await Course.find({ status: 'published' })
+      .select('title slug category language price description')
+      .sort({ enrollmentCount: -1 })
+      .limit(50)
+      .lean();
+
+    if (!courses.length) {
+      return 'No published courses are currently available on the platform.';
+    }
+
+    const baseUrl = (process.env.FRONTEND_URL || '').replace(/\/$/, '');
+
+    return courses
+      .map((c) => {
+        const shortDesc = (c.description || '').slice(0, 120);
+        const priceLabel = c.price > 0 ? `$${c.price}` : 'Free';
+        const link = `${baseUrl}/courses/${c.slug}`;
+        return `- "${c.title}" | Category: ${c.category} | Language/Tech: ${c.language} | Price: ${priceLabel} | Link: ${link} | ${shortDesc}`;
+      })
+      .join('\n');
   }
 };
 

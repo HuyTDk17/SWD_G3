@@ -1,12 +1,24 @@
 const generateMockResponse = (messages) => {
   const lastMessage = messages[messages.length - 1]?.content?.toLowerCase() || '';
+
+  const asksAboutCourses = ['course', 'khóa học', 'khoa hoc', 'recommend', 'gợi ý', 'goi y', 'tìm', 'tim']
+    .some((keyword) => lastMessage.includes(keyword));
+
+  if (asksAboutCourses) {
+    const catalogMsg = messages.find((m) => m.role === 'system' && m.content.includes('course catalog'));
+    if (catalogMsg) {
+      const catalogList = catalogMsg.content.split('\n\n')[1] || catalogMsg.content;
+      return `Here are some courses currently available on this platform:\n\n${catalogList}\n\n(Mock response — set a real GEMINI_API_KEY in .env for smarter, conversational answers.)`;
+    }
+  }
+
   if (lastMessage.includes('hello') || lastMessage.includes('xin chào')) {
-    return "Hello! I am your AI Language Assistant. I'm excited to help you practice! What target language topic would you like to practice today?";
+    return "Hello! I am your AI Coding Assistant. I'm excited to help you learn! What programming topic or question would you like help with today?";
   }
-  if (lastMessage.includes('grammar') || lastMessage.includes('ngữ pháp')) {
-    return "Sure! Let's practice grammar. Please write a sentence, and I will correct any mistakes you make.";
+  if (lastMessage.includes('bug') || lastMessage.includes('error') || lastMessage.includes('lỗi')) {
+    return "Sure! Let's debug this together. Please paste the code and the error message you're seeing, and I'll help you figure out what's wrong.";
   }
-  return "That's great! Let's continue practicing. Tell me more about your learning goals or write another sentence in your target language.";
+  return "That's great! Let's keep going. Tell me more about what you're building or paste a code snippet you'd like help with.";
 };
 
 const geminiClient = {
@@ -26,7 +38,7 @@ const geminiClient = {
 
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,
         {
           method: 'POST',
           headers: {
@@ -58,9 +70,9 @@ const geminiClient = {
 
   async gradeSpeakingOrOpenEnded(prompt, correctAnswer, studentInput) {
     const apiKey = process.env.GEMINI_API_KEY;
-    const systemPrompt = `You are an expert language teacher grading an open-ended or speaking practice prompt.
-Prompt given: "${prompt}"
-Expected Answer Reference: "${correctAnswer || 'Any coherent target language response is fine.'}"
+    const systemPrompt = `You are an expert programming instructor grading an open-ended quiz answer.
+Question given: "${prompt}"
+Expected Answer Reference: "${correctAnswer || 'Any correct, well-reasoned answer covering the key concept is fine.'}"
 Student's Answer: "${studentInput}"
 
 Please grade this answer. Return ONLY a valid JSON string (no markdown wraps like \`\`\`json) of this schema:
@@ -76,14 +88,14 @@ Please grade this answer. Return ONLY a valid JSON string (no markdown wraps lik
         score: studentInput ? 80 : 0,
         isPassed: !!studentInput,
         comment: studentInput
-          ? "Good job! (Mock evaluation: Sentence is coherent and covers basic communication goals.)"
+          ? "Good job! (Mock evaluation: Answer is coherent and covers the key concept.)"
           : "No answer provided."
       };
     }
 
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,
         {
           method: 'POST',
           headers: {

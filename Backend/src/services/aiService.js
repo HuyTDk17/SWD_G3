@@ -63,8 +63,21 @@ const aiService = {
       timestamp: new Date()
     });
 
+    // Ground the AI's answer in the real, current course catalog so it
+    // recommends actual courses on this platform instead of inventing ones.
+    const courseService = require('./courseService');
+    const catalogSummary = await courseService.getCatalogSummaryForAi();
+    const catalogContext = {
+      role: 'system',
+      content: `Here is the current live course catalog on this platform (CodeLearn). Each course includes its real page Link. When the student asks for course recommendations or a course link, only suggest courses from this list and give the exact Link shown — do not invent courses or URLs that aren't listed here. If nothing matches, say so honestly.\n\n${catalogSummary}`
+    };
+
+    // Insert the fresh catalog context right after the original system prompt,
+    // without polluting the persisted session history.
+    const messagesForModel = [session.messages[0], catalogContext, ...session.messages.slice(1)];
+
     // Call Gemini API
-    const responseContent = await geminiClient.generateContent(session.messages);
+    const responseContent = await geminiClient.generateContent(messagesForModel);
 
     // Append model response
     session.messages.push({

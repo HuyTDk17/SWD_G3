@@ -15,3 +15,19 @@ export const getPendingReviews = () => {
 export const moderateReview = (reviewId, status) => {
   return axiosClient.post(`/api/v1/reviews/${reviewId}/moderate`, { status });
 };
+
+export const updateReview = (reviewId, data) => {
+  return axiosClient.patch(`/api/v1/reviews/${reviewId}`, data);
+};
+
+export const deleteReview = (reviewId) => {
+  return axiosClient.delete(`/api/v1/reviews/${reviewId}`);
+};
+
+export const flagReview = (reviewId, reason) => {
+  return axiosClient.post(`/api/v1/reviews/${reviewId}/flag`, { reason });
+};
+
+export const getFlaggedReviews = () => {
+  return axiosClient.get("/api/v1/reviews/flagged");
+};

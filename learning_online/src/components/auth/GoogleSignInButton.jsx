@@ -25,6 +25,9 @@ function GoogleSignInButton({ onSuccess, onError, text = 'signin_with' }) {
         return;
       }
 
+      // Clear any previously rendered button (e.g. React StrictMode double-invoke in dev)
+      buttonRef.current.innerHTML = '';
+
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: (response) => {

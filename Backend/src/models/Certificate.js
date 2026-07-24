@@ -24,6 +24,14 @@ const certificateSchema = new mongoose.Schema({
     enum: ['active', 'revoked'],
     default: 'active'
   },
+  revokedAt: {
+    type: Date,
+    default: null
+  },
+  revokedReason: {
+    type: String,
+    default: ''
+  },
   issuedAt: {
     type: Date,
     default: Date.now

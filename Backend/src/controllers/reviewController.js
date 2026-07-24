@@ -39,6 +39,45 @@ const reviewController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  async updateReview(req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = await reviewService.updateReview(req.user.id, id, req.body);
+      res.json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async deleteReview(req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = await reviewService.deleteReview(req.user.id, req.user.role, id);
+      res.json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async flagReview(req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = await reviewService.flagReview(req.user.id, id, req.body.reason);
+      res.json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async listFlaggedReviews(req, res, next) {
+    try {
+      const data = await reviewService.getFlaggedReviews(req.user.role);
+      res.json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
   }
 };
 

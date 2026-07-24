@@ -16,5 +16,6 @@ quizRouter.delete('/:id', authMiddleware, roleGuard(ROLES.TEACHER, ROLES.ADMIN),
 quizRouter.post('/:id/attempts', authMiddleware, roleGuard(ROLES.STUDENT), quizController.startAttempt);
 quizRouter.get('/:id/attempts/:attemptId', authMiddleware, roleGuard(ROLES.STUDENT), quizController.getAttemptResult);
 quizRouter.post('/:id/attempts/:attemptId/submit', authMiddleware, roleGuard(ROLES.STUDENT), quizController.submitAttempt);
+quizRouter.get('/:id/analytics', authMiddleware, roleGuard(ROLES.TEACHER, ROLES.ADMIN), quizController.getAnalytics);
 
 module.exports = quizRouter;

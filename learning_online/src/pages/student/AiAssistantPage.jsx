@@ -31,7 +31,7 @@ function AiAssistantPage() {
   const [messages, setMessages] = useState([]);
   const [quota, setQuota] = useState(null);
 
-  const [newTargetLang, setNewTargetLang] = useState("English");
+  const [newTargetLang, setNewTargetLang] = useState("JavaScript");
   const [newType, setNewType] = useState("conversation");
 
   const [input, setInput] = useState("");
@@ -93,7 +93,7 @@ function AiAssistantPage() {
       setSessions(prev => [newSession, ...prev]);
       setActiveSession(newSession);
       setMessages(newSession.messages.filter(m => m.role !== "system"));
-      alert("New AI Language Session created successfully!");
+      alert("New AI Coding Session created successfully!");
     } catch (err) {
       console.error(err);
       alert("Failed to create session: " + (err.response?.data?.message || err.message));
@@ -144,7 +144,7 @@ function AiAssistantPage() {
       {/* Upper Quota Badge Indicators */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
         <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
-          AI Language Assistant
+          AI Coding Assistant
         </Typography>
         {quota && (
           <Chip
@@ -167,39 +167,42 @@ function AiAssistantPage() {
         <Grid size={{ xs: 12, md: 4 }} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
           <Paper sx={{ p: 2, mb: 2, borderRadius: 3 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5 }}>
-              Start New Practice Session
+              Start New Session
             </Typography>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
               <FormControl size="small" fullWidth>
-                <InputLabel>Language</InputLabel>
-                <Select value={newTargetLang} label="Language" onChange={(e) => setNewTargetLang(e.target.value)}>
-                  <MenuItem value="English">English</MenuItem>
-                  <MenuItem value="French">French</MenuItem>
-                  <MenuItem value="Spanish">Spanish</MenuItem>
-                  <MenuItem value="Vietnamese">Vietnamese</MenuItem>
-                  <MenuItem value="Chinese">Chinese</MenuItem>
-                  <MenuItem value="Japanese">Japanese</MenuItem>
-                  <MenuItem value="Korean">Korean</MenuItem>
+                <InputLabel>Programming Language</InputLabel>
+                <Select value={newTargetLang} label="Programming Language" onChange={(e) => setNewTargetLang(e.target.value)}>
+                  <MenuItem value="HTML/CSS">HTML/CSS</MenuItem>
+                  <MenuItem value="JavaScript">JavaScript</MenuItem>
+                  <MenuItem value="TypeScript">TypeScript</MenuItem>
+                  <MenuItem value="Python">Python</MenuItem>
+                  <MenuItem value="Java">Java</MenuItem>
+                  <MenuItem value="C#">C#</MenuItem>
+                  <MenuItem value="C++">C++</MenuItem>
+                  <MenuItem value="SQL">SQL</MenuItem>
+                  <MenuItem value="NoSQL">NoSQL</MenuItem>
+                  <MenuItem value="Git">Git</MenuItem>
                 </Select>
               </FormControl>
 
               <FormControl size="small" fullWidth>
                 <InputLabel>Focus</InputLabel>
                 <Select value={newType} label="Focus" onChange={(e) => setNewType(e.target.value)}>
-                  <MenuItem value="conversation">Free Conversation</MenuItem>
-                  <MenuItem value="grammar">Grammar Corrections</MenuItem>
+                  <MenuItem value="conversation">General Coding Help</MenuItem>
+                  <MenuItem value="grammar">Code Review</MenuItem>
                 </Select>
               </FormControl>
 
               <Button variant="contained" startIcon={<AddIcon />} onClick={handleCreateSession} fullWidth>
-                Start Practice Session
+                Start Session
               </Button>
             </Box>
           </Paper>
 
           <Paper sx={{ flexGrow: 1, overflowY: "auto", p: 2, borderRadius: 3 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-              Practice History
+              Session History
             </Typography>
             <Divider sx={{ mb: 1 }} />
             {sessions.length === 0 ? (
@@ -216,7 +219,7 @@ function AiAssistantPage() {
                       sx={{ borderRadius: 2 }}
                     >
                       <ListItemText
-                        primary={`${s.targetLanguage} - ${s.type === 'grammar' ? 'Grammar' : 'Conv'}`}
+                        primary={`${s.targetLanguage} - ${s.type === 'grammar' ? 'Review' : 'Chat'}`}
                         secondary={new Date(s.createdAt).toLocaleDateString()}
                       />
                     </ListItemButton>
@@ -234,10 +237,10 @@ function AiAssistantPage() {
               <>
                 <Box sx={{ borderBottom: "1px solid #eaeaea", pb: 1.5, mb: 2 }}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                    Active Practicing Session
+                    Active Session
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    Target Language: <strong>{activeSession.targetLanguage}</strong> | Focus: <strong>{activeSession.type}</strong>
+                    Language: <strong>{activeSession.targetLanguage}</strong> | Focus: <strong>{activeSession.type === 'grammar' ? 'Code Review' : 'General Coding Help'}</strong>
                   </Typography>
                 </Box>
 
@@ -278,7 +281,7 @@ function AiAssistantPage() {
                 {/* Send chat text field form */}
                 <Box component="form" onSubmit={handleSend} sx={{ display: "flex", gap: 1 }}>
                   <TextField
-                    placeholder="Type your message in target language..."
+                    placeholder="Ask a coding question..."
                     fullWidth
                     size="small"
                     value={input}
@@ -294,7 +297,7 @@ function AiAssistantPage() {
               <Box sx={{ m: "auto", textAlign: "center" }}>
                 <ChatIcon sx={{ fontSize: 60, color: "grey.300", mb: 2 }} />
                 <Typography color="text.secondary">
-                  Create or select a practice session from the sidebar to chat with Gemini.
+                  Create or select a session from the sidebar to chat with Gemini.
                 </Typography>
               </Box>
             )}

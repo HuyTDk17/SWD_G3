@@ -14,7 +14,8 @@ const userApi = {
   ),
   listUsers: (params) => axiosClient.get(PREFIX, { params }),
   updateUserStatus: (id, status) => axiosClient.patch(`${PREFIX}/${id}/status`, { status }),
-  updateUserRole: (id, role) => axiosClient.patch(`${PREFIX}/${id}/role`, { role })
+  updateUserRole: (id, role) => axiosClient.patch(`${PREFIX}/${id}/role`, { role }),
+  changePassword: (payload) => axiosClient.patch(`${PREFIX}/me/password`, payload)
 };
 
 export default userApi;

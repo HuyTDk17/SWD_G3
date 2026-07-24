@@ -1,6 +1,7 @@
 const userRepository = require('../repositories/userRepository');
 const teacherApplicationRepository = require('../repositories/teacherApplicationRepository');
 const mediaService = require('./mediaService');
+const { hashPassword, comparePassword } = require('../utils/hashPassword');
 const { ROLES } = require('../constants/roles');
 const { ASSET_TYPES, ASSET_PURPOSES } = require('../constants/mediaTypes');
 const ERROR_CODES = require('../constants/errorCodes');
@@ -191,6 +192,30 @@ const userService = {
     const user = await userRepository.updateById(userId, { role });
     if (!user) throw new NotFoundError('User not found', ERROR_CODES.USER_NOT_FOUND);
     return sanitizeUser(user);
+  },
+
+  async changePassword(userId, { currentPassword, newPassword }) {
+    const user = await userRepository.findById(userId);
+    if (!user) throw new NotFoundError('User not found', ERROR_CODES.USER_NOT_FOUND);
+
+    if (!user.passwordHash) {
+      throw new ValidationError(
+        'This account signed up with Google and has no password set yet',
+        null,
+        ERROR_CODES.INVALID_CREDENTIALS
+      );
+    }
+
+    const isMatch = await comparePassword(currentPassword, user.passwordHash);
+    if (!isMatch) {
+      throw new ValidationError('Current password is incorrect', [
+        { field: 'currentPassword', message: 'Current password is incorrect' }
+      ]);
+    }
+
+    const newHash = await hashPassword(newPassword);
+    await userRepository.updateById(userId, { passwordHash: newHash });
+    return { message: 'Password changed successfully' };
   }
 };
 

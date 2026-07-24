@@ -11,16 +11,15 @@ import {
   Alert
 } from "@mui/material";
 import MediaUpload from "../media/MediaUpload";
+import { getPublicConfig } from "../../api/configApi";
 
-const LANGUAGES = ["English", "Vietnamese", "French", "Spanish", "Chinese", "Japanese", "Korean"];
-const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
-const CATEGORIES = ["Programming Fundamentals", "Frontend", "Backend", "Database", "DevOps", "Mobile"];
+const LANGUAGES = ["HTML/CSS", "JavaScript", "TypeScript", "Python", "Java", "C#", "C++", "SQL", "NoSQL", "Git"];
 
 function CourseForm({ initialData = null, onSubmit, saving, error }) {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    language: "English",
+    language: "JavaScript",
     cefrLevel: "A1",
     category: "General",
     price: 0,
@@ -33,6 +32,21 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
   });
 
   const [thumbnailAsset, setThumbnailAsset] = useState(null);
+  const [cefrLevels, setCefrLevels] = useState(["A1", "A2", "B1", "B2", "C1", "C2"]);
+  const [categories, setCategories] = useState(["Programming Fundamentals", "Frontend", "Backend", "Database", "DevOps", "Mobile"]);
+
+  useEffect(() => {
+    const loadFilterOptions = async () => {
+      try {
+        const res = await getPublicConfig();
+        if (res.data.data.cefrLevels?.length) setCefrLevels(res.data.data.cefrLevels);
+        if (res.data.data.categories?.length) setCategories(res.data.data.categories);
+      } catch (err) {
+        console.error("Failed to load category/level options", err);
+      }
+    };
+    Promise.resolve().then(() => loadFilterOptions());
+  }, []);
 
   useEffect(() => {
     const syncFromInitialData = () => {
@@ -40,7 +54,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
       setForm({
         title: initialData.title || "",
         description: initialData.description || "",
-        language: initialData.language || "English",
+        language: initialData.language || "JavaScript",
         cefrLevel: initialData.cefrLevel || "A1",
         category: initialData.category || "General",
         price: initialData.price ?? 0,
@@ -160,7 +174,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
             value={form.cefrLevel}
             onChange={handleChange}
           >
-            {CEFR_LEVELS.map((level) => (
+            {cefrLevels.map((level) => (
               <MenuItem key={level} value={level}>
                 {level}
               </MenuItem>
@@ -177,7 +191,7 @@ function CourseForm({ initialData = null, onSubmit, saving, error }) {
             value={form.category}
             onChange={handleChange}
           >
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <MenuItem key={cat} value={cat}>
                 {cat}
               </MenuItem>

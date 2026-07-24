@@ -349,6 +349,65 @@ const quizService = {
       passingScore: quiz.passingScore,
       details
     };
+  },
+
+  async getQuizAnalytics(userId, role, quizId) {
+    const quiz = await quizRepository.findQuizById(quizId);
+    if (!quiz) {
+      throw new NotFoundError('Quiz not found', ERROR_CODES.NOT_FOUND);
+    }
+    if (quiz.teacherId.toString() !== userId && role !== 'admin') {
+      throw new ForbiddenError('No permission to view analytics for this quiz', ERROR_CODES.FORBIDDEN);
+    }
+
+    // Only count each student's most recent submitted attempt, to avoid skewing stats with retries.
+    const attempts = await QuizAttempt.find({ quizId, gradingStatus: { $ne: 'pending' }, score: { $ne: null } })
+      .sort({ createdAt: -1 })
+      .populate('studentId', 'fullName email');
+
+    const latestByStudent = new Map();
+    for (const attempt of attempts) {
+      const key = attempt.studentId?._id?.toString();
+      if (key && !latestByStudent.has(key)) {
+        latestByStudent.set(key, attempt);
+      }
+    }
+    const uniqueAttempts = [...latestByStudent.values()];
+
+    const totalAttempts = attempts.length;
+    const totalStudents = uniqueAttempts.length;
+    const averageScore = totalStudents
+      ? Math.round((uniqueAttempts.reduce((sum, a) => sum + (a.score || 0), 0) / totalStudents) * 10) / 10
+      : 0;
+    const passedCount = uniqueAttempts.filter((a) => a.isPassed).length;
+    const passRate = totalStudents ? Math.round((passedCount / totalStudents) * 100) : 0;
+
+    const scoreBuckets = { '0-49': 0, '50-69': 0, '70-89': 0, '90-100': 0 };
+    uniqueAttempts.forEach((a) => {
+      const s = a.score || 0;
+      if (s < 50) scoreBuckets['0-49'] += 1;
+      else if (s < 70) scoreBuckets['50-69'] += 1;
+      else if (s < 90) scoreBuckets['70-89'] += 1;
+      else scoreBuckets['90-100'] += 1;
+    });
+
+    return {
+      quizId,
+      quizTitle: quiz.title,
+      totalAttempts,
+      totalStudents,
+      averageScore,
+      passRate,
+      passedCount,
+      failedCount: totalStudents - passedCount,
+      scoreDistribution: scoreBuckets,
+      recentAttempts: uniqueAttempts.slice(0, 20).map((a) => ({
+        studentName: a.studentId?.fullName || 'Unknown',
+        score: a.score,
+        isPassed: a.isPassed,
+        submittedAt: a.createdAt
+      }))
+    };
   }
 };
 

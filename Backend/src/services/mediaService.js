@@ -204,6 +204,32 @@ const deleteAsset = async ({ assetId, user }) => {
   return { deleted: true };
 };
 
+// FR-MEDIA-005: System job — remove orphaned assets (uploaded but never attached to a
+// lesson/avatar/document) that are older than the given threshold, to reclaim storage.
+const cleanupOrphanAssets = async (olderThanHours = 24) => {
+  const cutoff = new Date(Date.now() - olderThanHours * 60 * 60 * 1000);
+  const orphans = await mediaAssetRepository.findOrphansOlderThan(cutoff);
+
+  let deletedCount = 0;
+  let failedCount = 0;
+  for (const asset of orphans) {
+    try {
+      if (asset.provider === MEDIA_PROVIDERS.LOCAL) {
+        await localStorageClient.deleteFile(asset.storageKey);
+      } else if (asset.provider === MEDIA_PROVIDERS.CLOUDINARY) {
+        await cloudinaryClient.deleteAsset({ publicId: asset.publicId, assetType: asset.type });
+      }
+      await mediaAssetRepository.deleteById(asset._id);
+      deletedCount += 1;
+    } catch (error) {
+      failedCount += 1;
+      console.error(`[MEDIA CLEANUP] Failed to delete orphan asset ${asset._id}:`, error.message);
+    }
+  }
+
+  return { scanned: orphans.length, deletedCount, failedCount };
+};
+
 const verifyOwnedAssets = async ({ ownerId, assetIds, type, purpose, allowAttachedId = null }) => {
   if (!assetIds.length) return [];
   const assets = await mediaAssetRepository.findByIds(assetIds);
@@ -245,6 +271,7 @@ module.exports = {
   getAssetMetadata,
   getAssetContent,
   deleteAsset,
+  cleanupOrphanAssets,
   verifyOwnedAssets,
   attachAsset,
   detachAsset,

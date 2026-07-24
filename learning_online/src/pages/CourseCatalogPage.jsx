@@ -19,15 +19,15 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
 import courseService from "../services/courseService";
+import { getPublicConfig } from "../api/configApi";
 import CourseCard from "../components/CourseCard";
-
-const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
-const CATEGORIES = ["Programming Fundamentals", "Frontend", "Backend", "Database", "DevOps", "Mobile"];
 
 function CourseCatalogPage() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [cefrLevels, setCefrLevels] = useState([]);
+  const [categories, setCategories] = useState([]);
   
   // Filters
   const [search, setSearch] = useState("");
@@ -71,6 +71,19 @@ function CourseCatalogPage() {
   useEffect(() => {
     Promise.resolve().then(() => loadCourses());
   }, [page, search, language, cefrLevel, category, sortBy]);
+
+  useEffect(() => {
+    const loadFilterOptions = async () => {
+      try {
+        const res = await getPublicConfig();
+        setCefrLevels(res.data.data.cefrLevels || []);
+        setCategories(res.data.data.categories || []);
+      } catch (err) {
+        console.error("Failed to load filter options", err);
+      }
+    };
+    Promise.resolve().then(() => loadFilterOptions());
+  }, []);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -132,7 +145,7 @@ function CourseCatalogPage() {
                   onChange={(e) => { setCefrLevel(e.target.value); setPage(1); }}
                 >
                   <MenuItem value=""><em>All Levels</em></MenuItem>
-                  {CEFR_LEVELS.map((level) => (
+                  {cefrLevels.map((level) => (
                     <MenuItem key={level} value={level}>{level}</MenuItem>
                   ))}
                 </Select>
@@ -147,7 +160,7 @@ function CourseCatalogPage() {
                   onChange={(e) => { setCategory(e.target.value); setPage(1); }}
                 >
                   <MenuItem value=""><em>All Categories</em></MenuItem>
-                  {CATEGORIES.map((cat) => (
+                  {categories.map((cat) => (
                     <MenuItem key={cat} value={cat}>{cat}</MenuItem>
                   ))}
                 </Select>

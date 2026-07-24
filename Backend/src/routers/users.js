@@ -13,6 +13,7 @@ router.use(authMiddleware);
 router.get('/me', userController.getMe);
 router.patch('/me', validate(userValidators.updateProfile), userController.updateMe);
 router.patch('/me/avatar', validate(userValidators.setAvatar), userController.setAvatar);
+router.patch('/me/password', validate(userValidators.changePassword), userController.changePassword);
 
 router.post(
   '/teacher-application',

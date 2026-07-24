@@ -51,6 +51,25 @@ const aiController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  async checkGrammar(req, res, next) {
+    try {
+      const { text, targetLanguage } = req.body;
+      const data = await aiService.checkGrammar(req.user.id, text, targetLanguage);
+      res.json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getStudyRecommendation(req, res, next) {
+    try {
+      const data = await aiService.getStudyRecommendation(req.user.id);
+      res.json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
   }
 };
 

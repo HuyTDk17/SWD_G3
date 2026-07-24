@@ -12,8 +12,12 @@ import {
   Typography,
   FormControlLabel,
   Checkbox,
-  Divider
+  Divider,
+  IconButton,
+  InputAdornment
 } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import MediaUpload from '../components/media/MediaUpload';
@@ -34,6 +38,15 @@ function ProfilePage() {
   // Notification settings states (Step 11)
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [systemAlerts, setSystemAlerts] = useState(true);
+
+  // Change password form state
+  const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [pwError, setPwError] = useState('');
+  const [pwMessage, setPwMessage] = useState('');
+  const [pwSaving, setPwSaving] = useState(false);
+  const [showCurrentPw, setShowCurrentPw] = useState(false);
+  const [showNewPw, setShowNewPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -124,6 +137,31 @@ function ProfilePage() {
       setError(userService.getErrorMessage(err));
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handlePasswordChange = async (event) => {
+    event.preventDefault();
+    setPwError('');
+    setPwMessage('');
+
+    if (pwForm.newPassword !== pwForm.confirmPassword) {
+      setPwError('New password and confirmation do not match.');
+      return;
+    }
+
+    setPwSaving(true);
+    try {
+      await userService.changePassword({
+        currentPassword: pwForm.currentPassword,
+        newPassword: pwForm.newPassword
+      });
+      setPwMessage('Password changed successfully.');
+      setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (err) {
+      setPwError(userService.getErrorMessage(err));
+    } finally {
+      setPwSaving(false);
     }
   };
 
@@ -240,6 +278,72 @@ function ProfilePage() {
 
           <Button type="submit" variant="contained" disabled={saving}>
             {saving ? 'Saving...' : 'Save profile'}
+          </Button>
+        </Stack>
+      </Paper>
+
+      <Paper component="form" onSubmit={handlePasswordChange} sx={{ p: 3, mt: 3 }}>
+        <Typography variant="h6" gutterBottom>Change password</Typography>
+        <Stack spacing={2}>
+          {pwError && <Alert severity="error">{pwError}</Alert>}
+          {pwMessage && <Alert severity="success">{pwMessage}</Alert>}
+          <TextField
+            label="Current password"
+            type={showCurrentPw ? 'text' : 'password'}
+            value={pwForm.currentPassword}
+            onChange={(e) => setPwForm((f) => ({ ...f, currentPassword: e.target.value }))}
+            required
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowCurrentPw((v) => !v)} edge="end">
+                      {showCurrentPw ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }
+            }}
+          />
+          <TextField
+            label="New password"
+            type={showNewPw ? 'text' : 'password'}
+            value={pwForm.newPassword}
+            onChange={(e) => setPwForm((f) => ({ ...f, newPassword: e.target.value }))}
+            required
+            helperText="Minimum 8 characters."
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowNewPw((v) => !v)} edge="end">
+                      {showNewPw ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }
+            }}
+          />
+          <TextField
+            label="Confirm new password"
+            type={showConfirmPw ? 'text' : 'password'}
+            value={pwForm.confirmPassword}
+            onChange={(e) => setPwForm((f) => ({ ...f, confirmPassword: e.target.value }))}
+            required
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowConfirmPw((v) => !v)} edge="end">
+                      {showConfirmPw ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }
+            }}
+          />
+          <Button type="submit" variant="contained" disabled={pwSaving}>
+            {pwSaving ? 'Updating...' : 'Update password'}
           </Button>
         </Stack>
       </Paper>

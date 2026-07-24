@@ -290,10 +290,36 @@ const lessonService = {
 
     const completionPercent = publishedCount > 0 ? Math.round((completedCount / publishedCount) * 100) : 0;
 
+    // FR-PROGRESS-004: Track daily study streaks.
+    // Compare the calendar day of the last study session to today:
+    //  - same day  -> streak unchanged (already counted today)
+    //  - +1 day    -> streak continues, increment by 1
+    //  - gap > 1 day (or first ever session) -> streak resets to 1
+    const startOfDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const today = startOfDay(new Date());
+    let { currentStreak = 0, longestStreak = 0 } = progress;
+
+    if (!progress.lastStudiedAt) {
+      currentStreak = 1;
+    } else {
+      const lastDay = startOfDay(new Date(progress.lastStudiedAt));
+      const dayDiff = Math.round((today - lastDay) / (24 * 60 * 60 * 1000));
+      if (dayDiff === 0) {
+        // already studied today, keep current streak as-is
+      } else if (dayDiff === 1) {
+        currentStreak += 1;
+      } else {
+        currentStreak = 1;
+      }
+    }
+    longestStreak = Math.max(longestStreak, currentStreak);
+
     const updatedProgress = await progressRepository.updateProgressById(progress._id, {
       lessonsCompleted: completedCount,
       totalLessons: publishedCount,
       completionPercent,
+      currentStreak,
+      longestStreak,
       lastStudiedAt: Date.now()
     });
 

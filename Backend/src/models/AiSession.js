@@ -14,7 +14,7 @@ const aiSessionSchema = new mongoose.Schema({
   },
   targetLanguage: {
     type: String,
-    default: 'English'
+    default: 'JavaScript'
   },
   messages: [{
     role: {

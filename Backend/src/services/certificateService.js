@@ -81,6 +81,41 @@ const certificateService = {
       throw new NotFoundError('Certificate not found or verification code is invalid.', ERROR_CODES.NOT_FOUND);
     }
 
+    // Surface revoked status explicitly rather than pretending the cert is still valid.
+    return cert;
+  },
+
+  async listAllCertificates(query = {}) {
+    const filter = {};
+    if (query.status) filter.status = query.status;
+    return Certificate.find(filter)
+      .populate({ path: 'studentId', select: 'fullName email' })
+      .populate({ path: 'courseId', select: 'title' })
+      .sort({ issuedAt: -1 });
+  },
+
+  async revokeCertificate(certificateId, reason) {
+    const cert = await Certificate.findById(certificateId).populate('courseId');
+    if (!cert) {
+      throw new NotFoundError('Certificate not found', ERROR_CODES.NOT_FOUND);
+    }
+    if (cert.status === 'revoked') {
+      return cert;
+    }
+
+    cert.status = 'revoked';
+    cert.revokedAt = new Date();
+    cert.revokedReason = reason || '';
+    await cert.save();
+
+    const courseTitle = cert.courseId ? cert.courseId.title : 'a course';
+    await notificationService.createNotification(
+      cert.studentId,
+      'Certificate Revoked',
+      `Your certificate for "${courseTitle}" has been revoked by an administrator.${reason ? ` Reason: ${reason}` : ''}`,
+      'system'
+    );
+
     return cert;
   }
 };

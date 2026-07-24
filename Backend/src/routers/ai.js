@@ -11,4 +11,7 @@ aiRouter.post('/sessions', aiController.createSession);
 aiRouter.get('/sessions/:id', aiController.getSession);
 aiRouter.post('/sessions/:id/messages', aiController.sendMessage);
 
+aiRouter.post('/grammar-check', aiController.checkGrammar);
+aiRouter.get('/recommendation', aiController.getStudyRecommendation);
+
 module.exports = aiRouter;

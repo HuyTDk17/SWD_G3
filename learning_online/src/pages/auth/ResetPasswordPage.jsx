@@ -49,9 +49,9 @@ function ResetPasswordPage() {
   return (
     <Box component="form" onSubmit={handleSubmit}>
       <Typography variant="h6" gutterBottom>Reset password</Typography>
-      <Alert severity="info" sx={{ mb: 2 }}>
-        Development OTP is fixed to <strong>123456</strong>.
-      </Alert>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        Enter the 6-digit code we emailed you along with your new password.
+      </Typography>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       {message && <Alert severity="success" sx={{ mb: 2 }}>{message}</Alert>}
       <Stack spacing={2}>

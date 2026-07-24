@@ -35,6 +35,25 @@ const reviewRepository = {
     return Review.findByIdAndUpdate(id, { status }, { new: true });
   },
 
+  updateContent(id, { rating, comment }) {
+    return Review.findByIdAndUpdate(id, { rating, comment, status: 'pending' }, { new: true });
+  },
+
+  addFlag(id, userId, reason) {
+    return Review.findByIdAndUpdate(
+      id,
+      { $push: { flags: { userId, reason } } },
+      { new: true }
+    );
+  },
+
+  findFlagged() {
+    return Review.find({ 'flags.0': { $exists: true } })
+      .populate({ path: 'studentId', select: 'name email' })
+      .populate({ path: 'courseId', select: 'title language slug' })
+      .sort({ updatedAt: -1 });
+  },
+
   deleteById(id) {
     return Review.findByIdAndDelete(id);
   },

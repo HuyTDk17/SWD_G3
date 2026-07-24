@@ -53,6 +53,15 @@ const authValidators = {
     return { email: body.email.trim(), password: body.password };
   },
 
+  googleLogin: (body) => {
+    if (!body.credential || typeof body.credential !== 'string') {
+      throw new ValidationError('Validation failed', [
+        { field: 'credential', message: 'Google credential token is required' }
+      ]);
+    }
+    return { credential: body.credential };
+  },
+
   forgotPassword: (body) => {
     if (!body.email || !isEmail(body.email)) {
       throw new ValidationError('Validation failed', [{ field: 'email', message: 'Valid email is required' }]);

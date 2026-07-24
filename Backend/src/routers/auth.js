@@ -9,6 +9,7 @@ router.post('/register', validate(authValidators.register), authController.regis
 router.post('/verify-otp', validate(authValidators.verifyOtp), authController.verifyOtp);
 router.post('/resend-otp', validate(authValidators.resendOtp), authController.resendOtp);
 router.post('/login', validate(authValidators.login), authController.login);
+router.post('/google', validate(authValidators.googleLogin), authController.googleLogin);
 router.post('/refresh', authController.refresh);
 router.post('/logout', authController.logout);
 router.post('/forgot-password', validate(authValidators.forgotPassword), authController.forgotPassword);

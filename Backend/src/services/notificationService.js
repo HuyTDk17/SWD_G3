@@ -77,6 +77,21 @@ const notificationService = {
       { recipientId: userId, isRead: false },
       { isRead: true }
     );
+  },
+
+  async broadcastAnnouncement({ title, message, role }) {
+    const filter = { status: 'active' };
+    if (role && role !== 'all') {
+      filter.role = role;
+    }
+
+    const recipients = await User.find(filter).select('_id');
+    const results = await Promise.allSettled(
+      recipients.map((recipient) => this.createNotification(recipient._id, title, message, 'system'))
+    );
+
+    const sentCount = results.filter((r) => r.status === 'fulfilled').length;
+    return { recipientCount: recipients.length, sentCount };
   }
 };
 

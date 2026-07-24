@@ -28,6 +28,15 @@ const userController = {
     }
   },
 
+  async changePassword(req, res, next) {
+    try {
+      const data = await userService.changePassword(req.user.id, req.validated);
+      res.json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async submitTeacherApplication(req, res, next) {
     try {
       const data = await userService.submitTeacherApplication(req.user.id, req.validated);

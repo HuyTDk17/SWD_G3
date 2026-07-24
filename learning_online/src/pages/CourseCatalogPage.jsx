@@ -19,16 +19,15 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
 import courseService from "../services/courseService";
+import { getPublicConfig } from "../api/configApi";
 import CourseCard from "../components/CourseCard";
-
-const LANGUAGES = ["English", "Vietnamese", "French", "Spanish", "Chinese", "Japanese", "Korean"];
-const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
-const CATEGORIES = ["Programming", "Mobile", "Web", "Languages", "Business", "General"];
 
 function CourseCatalogPage() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [cefrLevels, setCefrLevels] = useState([]);
+  const [categories, setCategories] = useState([]);
   
   // Filters
   const [search, setSearch] = useState("");
@@ -73,6 +72,19 @@ function CourseCatalogPage() {
     Promise.resolve().then(() => loadCourses());
   }, [page, search, language, cefrLevel, category, sortBy]);
 
+  useEffect(() => {
+    const loadFilterOptions = async () => {
+      try {
+        const res = await getPublicConfig();
+        setCefrLevels(res.data.data.cefrLevels || []);
+        setCategories(res.data.data.categories || []);
+      } catch (err) {
+        console.error("Failed to load filter options", err);
+      }
+    };
+    Promise.resolve().then(() => loadFilterOptions());
+  }, []);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setSearch(searchTemp);
@@ -106,7 +118,7 @@ function CourseCatalogPage() {
           Discover Courses
         </Typography>
         <Typography variant="h6" sx={{ opacity: 0.9 }}>
-          Master new languages and skills with expert-led courses.
+          Master programming languages and frameworks with expert-led courses.
         </Typography>
       </Box>
 
@@ -124,31 +136,16 @@ function CourseCatalogPage() {
                 </IconButton>
               </Box>
 
-              {/* Language filter */}
+              {/* Level filter */}
               <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-                <InputLabel>Language</InputLabel>
-                <Select
-                  value={language}
-                  label="Language"
-                  onChange={(e) => { setLanguage(e.target.value); setPage(1); }}
-                >
-                  <MenuItem value=""><em>All Languages</em></MenuItem>
-                  {LANGUAGES.map((l) => (
-                    <MenuItem key={l} value={l}>{l}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/* CEFR Level filter */}
-              <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-                <InputLabel>CEFR Level</InputLabel>
+                <InputLabel>Level</InputLabel>
                 <Select
                   value={cefrLevel}
-                  label="CEFR Level"
+                  label="Level"
                   onChange={(e) => { setCefrLevel(e.target.value); setPage(1); }}
                 >
                   <MenuItem value=""><em>All Levels</em></MenuItem>
-                  {CEFR_LEVELS.map((level) => (
+                  {cefrLevels.map((level) => (
                     <MenuItem key={level} value={level}>{level}</MenuItem>
                   ))}
                 </Select>
@@ -163,7 +160,7 @@ function CourseCatalogPage() {
                   onChange={(e) => { setCategory(e.target.value); setPage(1); }}
                 >
                   <MenuItem value=""><em>All Categories</em></MenuItem>
-                  {CATEGORIES.map((cat) => (
+                  {categories.map((cat) => (
                     <MenuItem key={cat} value={cat}>{cat}</MenuItem>
                   ))}
                 </Select>

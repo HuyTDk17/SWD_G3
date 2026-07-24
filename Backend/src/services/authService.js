@@ -18,7 +18,11 @@ const ForbiddenError = require('../exceptions/ForbiddenError');
 const NotFoundError = require('../exceptions/NotFoundError');
 const ConflictError = require('../exceptions/ConflictError');
 const OtpToken = require('../models/OtpToken');
+const emailHelper = require('../utils/emailHelper');
+const { OAuth2Client } = require('google-auth-library');
 const { OTP_TYPES } = OtpToken;
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const OTP_TTL_MS = 5 * 60 * 1000;
 const MAX_OTP_ATTEMPTS = 5;
@@ -60,6 +64,37 @@ const createOtpForUser = async (userId, type) => {
   return code;
 };
 
+const OTP_EMAIL_COPY = {
+  [OTP_TYPES.EMAIL_VERIFY]: {
+    subject: 'Verify your email - Language Learning',
+    heading: 'Confirm your email address',
+    intro: 'Use the code below to verify your email and activate your account.'
+  },
+  [OTP_TYPES.PASSWORD_RESET]: {
+    subject: 'Reset your password - Language Learning',
+    heading: 'Reset your password',
+    intro: 'Use the code below to reset your password. If you did not request this, you can ignore this email.'
+  }
+};
+
+const sendOtpEmail = async ({ to, fullName, code, type }) => {
+  const copy = OTP_EMAIL_COPY[type] || OTP_EMAIL_COPY[OTP_TYPES.EMAIL_VERIFY];
+  const greeting = fullName ? `Hi ${fullName},` : 'Hi,';
+
+  await emailHelper.sendEmail({
+    to,
+    subject: copy.subject,
+    text: `${greeting} ${copy.intro} Your verification code is ${code}. It expires in 5 minutes.`,
+    html: `<div style="font-family: sans-serif; padding: 20px; color: #333;">
+      <h2>${copy.heading}</h2>
+      <p>${greeting}</p>
+      <p>${copy.intro}</p>
+      <p style="font-size: 32px; font-weight: 700; letter-spacing: 6px; margin: 24px 0;">${code}</p>
+      <p style="font-size: 13px; color: #777;">This code expires in 5 minutes. If you didn't request this, you can safely ignore this email.</p>
+    </div>`
+  });
+};
+
 const issueTokenPair = async (user) => {
   const payload = { id: user._id.toString(), role: user.role, email: user.email };
   const accessToken = generateAccessToken(payload);
@@ -93,12 +128,12 @@ const authService = {
       isEmailVerified: false
     });
 
-    await createOtpForUser(user._id, OTP_TYPES.EMAIL_VERIFY);
+    const code = await createOtpForUser(user._id, OTP_TYPES.EMAIL_VERIFY);
+    await sendOtpEmail({ to: normalizedEmail, fullName: user.fullName, code, type: OTP_TYPES.EMAIL_VERIFY });
 
     return {
       userId: user._id,
-      message: 'OTP sent to email',
-      devOtp: process.env.NODE_ENV !== 'production' ? '123456' : undefined
+      message: 'OTP sent to email'
     };
   },
 
@@ -146,11 +181,11 @@ const authService = {
       return { message: 'Email already verified' };
     }
 
-    await createOtpForUser(user._id, OTP_TYPES.EMAIL_VERIFY);
+    const code = await createOtpForUser(user._id, OTP_TYPES.EMAIL_VERIFY);
+    await sendOtpEmail({ to: user.email, fullName: user.fullName, code, type: OTP_TYPES.EMAIL_VERIFY });
 
     return {
-      message: 'OTP resent',
-      devOtp: process.env.NODE_ENV !== 'production' ? '123456' : undefined
+      message: 'OTP resent'
     };
   },
 
@@ -187,6 +222,59 @@ const authService = {
     }
 
     await userRepository.updateById(user._id, { failedLoginCount: 0, lockUntil: null });
+    return issueTokenPair(user);
+  },
+
+  async loginWithGoogle({ credential }) {
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      throw new UnauthorizedError('Google login is not configured', ERROR_CODES.GOOGLE_AUTH_FAILED);
+    }
+
+    let payload;
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken: credential,
+        audience: process.env.GOOGLE_CLIENT_ID
+      });
+      payload = ticket.getPayload();
+    } catch {
+      throw new UnauthorizedError('Invalid Google credential', ERROR_CODES.GOOGLE_AUTH_FAILED);
+    }
+
+    if (!payload || !payload.email) {
+      throw new UnauthorizedError('Google account has no email', ERROR_CODES.GOOGLE_AUTH_FAILED);
+    }
+
+    const normalizedEmail = payload.email.toLowerCase().trim();
+    let user = await userRepository.findByGoogleId(payload.sub);
+
+    if (!user) {
+      user = await userRepository.findByEmail(normalizedEmail);
+
+      if (user) {
+        // Existing email/password account signing in with Google for the first time: link it.
+        user = await userRepository.updateById(user._id, {
+          googleId: payload.sub,
+          isEmailVerified: true,
+          avatar: user.avatar || payload.picture || null
+        });
+      } else {
+        user = await userRepository.create({
+          fullName: payload.name || normalizedEmail.split('@')[0],
+          email: normalizedEmail,
+          passwordHash: null,
+          googleId: payload.sub,
+          role: ROLES.STUDENT,
+          isEmailVerified: true,
+          avatar: payload.picture || null
+        });
+      }
+    }
+
+    if (user.status !== USER_STATUS.ACTIVE) {
+      throw new ForbiddenError('Account is not active', ERROR_CODES.FORBIDDEN);
+    }
+
     return issueTokenPair(user);
   },
 
@@ -230,11 +318,11 @@ const authService = {
       return { message: 'If the email exists, a reset OTP has been sent' };
     }
 
-    await createOtpForUser(user._id, OTP_TYPES.PASSWORD_RESET);
+    const code = await createOtpForUser(user._id, OTP_TYPES.PASSWORD_RESET);
+    await sendOtpEmail({ to: user.email, fullName: user.fullName, code, type: OTP_TYPES.PASSWORD_RESET });
 
     return {
-      message: 'If the email exists, a reset OTP has been sent',
-      devOtp: process.env.NODE_ENV !== 'production' ? '123456' : undefined
+      message: 'If the email exists, a reset OTP has been sent'
     };
   },
 

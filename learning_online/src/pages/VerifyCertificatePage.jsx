@@ -102,7 +102,7 @@ function VerifyCertificatePage() {
             Officially Verified Qualification
           </Typography>
           <Typography variant="caption" color="success.dark">
-            This qualification is authentic and verified on the Language Learning platform database under UUID: {cert.verificationCode}
+            This qualification is authentic and verified on the CodeLearn platform database under UUID: {cert.verificationCode}
           </Typography>
         </Box>
       </Paper>

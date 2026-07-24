@@ -9,6 +9,10 @@ const userRepository = {
     return User.findOne({ email: email.toLowerCase().trim() });
   },
 
+  findByGoogleId(googleId) {
+    return User.findOne({ googleId });
+  },
+
   findById(id) {
     return User.findById(id);
   },

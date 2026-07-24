@@ -96,6 +96,16 @@ const quizController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  async getAnalytics(req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = await quizService.getQuizAnalytics(req.user.id, req.user.role, id);
+      res.json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
   }
 };
 

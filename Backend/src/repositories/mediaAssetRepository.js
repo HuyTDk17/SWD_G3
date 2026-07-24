@@ -31,6 +31,10 @@ const mediaAssetRepository = {
       { isOrphan: false, purpose },
       { new: true, runValidators: true }
     );
+  },
+
+  findOrphansOlderThan(cutoffDate) {
+    return MediaAsset.find({ isOrphan: true, createdAt: { $lt: cutoffDate } });
   }
 };
 

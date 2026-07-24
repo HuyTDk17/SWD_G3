@@ -45,6 +45,15 @@ const notificationController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  async broadcastAnnouncement(req, res, next) {
+    try {
+      const data = await notificationService.broadcastAnnouncement(req.validated);
+      res.json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
   }
 };
 

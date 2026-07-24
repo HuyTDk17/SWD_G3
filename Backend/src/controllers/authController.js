@@ -16,8 +16,7 @@ const sendAuthResponse = (res, result, statusCode = 200) => {
       accessToken: result.accessToken,
       user: result.user,
       message: result.message,
-      userId: result.userId,
-      devOtp: result.devOtp
+      userId: result.userId
     }
   });
 };
@@ -53,6 +52,15 @@ const authController = {
   async login(req, res, next) {
     try {
       const result = await authService.login(req.validated);
+      sendAuthResponse(res, result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async googleLogin(req, res, next) {
+    try {
+      const result = await authService.loginWithGoogle(req.validated);
       sendAuthResponse(res, result);
     } catch (error) {
       next(error);

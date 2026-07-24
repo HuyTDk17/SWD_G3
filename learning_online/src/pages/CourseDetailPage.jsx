@@ -13,12 +13,20 @@ import {
   Divider,
   Paper,
   Stack,
-  TextField
+  TextField,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from "@mui/material";
-import { getCourseReviews, submitReview } from "../api/reviewApi";
+import { getCourseReviews, submitReview, updateReview, deleteReview, flagReview } from "../api/reviewApi";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EventIcon from "@mui/icons-material/Event";
 import GroupIcon from "@mui/icons-material/Group";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FlagIcon from "@mui/icons-material/Flag";
 import { resolveMediaUrl } from "../utils/media";
 import ListIcon from "@mui/icons-material/List";
 import courseService from "../services/courseService";
@@ -42,6 +50,14 @@ function CourseDetailPage() {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
+
+  // Edit/Delete/Flag review state
+  const [editingReview, setEditingReview] = useState(null);
+  const [editRating, setEditRating] = useState(5);
+  const [editComment, setEditComment] = useState("");
+  const [flaggingReview, setFlaggingReview] = useState(null);
+  const [flagReason, setFlagReason] = useState("");
+  const [reviewActionError, setReviewActionError] = useState("");
 
   useEffect(() => {
     const loadCourse = async () => {
@@ -98,6 +114,56 @@ function CourseDetailPage() {
     }
   };
 
+  const openEditReview = (review) => {
+    setEditingReview(review);
+    setEditRating(review.rating);
+    setEditComment(review.comment);
+    setReviewActionError("");
+  };
+
+  const handleSaveEditReview = async () => {
+    try {
+      await updateReview(editingReview._id, { rating: editRating, comment: editComment });
+      // Editing resets the review to 'pending' for re-moderation, so it drops out of the
+      // approved list shown here until an admin re-approves it.
+      setReviews((prev) => prev.filter((r) => r._id !== editingReview._id));
+      setHasReviewed(false);
+      setEditingReview(null);
+      alert("Review updated. It will be visible again once re-approved by an administrator.");
+    } catch (err) {
+      setReviewActionError(err.response?.data?.message || err.message);
+    }
+  };
+
+  const handleDeleteReview = async (review) => {
+    if (!window.confirm("Delete this review? This cannot be undone.")) return;
+    try {
+      await deleteReview(review._id);
+      setReviews((prev) => prev.filter((r) => r._id !== review._id));
+      if (review.studentId?._id === user?.id) {
+        setHasReviewed(false);
+      }
+    } catch (err) {
+      alert("Failed to delete review: " + (err.response?.data?.message || err.message));
+    }
+  };
+
+  const openFlagReview = (review) => {
+    setFlaggingReview(review);
+    setFlagReason("");
+    setReviewActionError("");
+  };
+
+  const handleSubmitFlag = async () => {
+    try {
+      await flagReview(flaggingReview._id, flagReason);
+      setFlaggingReview(null);
+      alert("Thanks for the report. Our team will review this shortly.");
+    } catch (err) {
+      setReviewActionError(err.response?.data?.message || err.message);
+    }
+  };
+
   const handleEnroll = async () => {
     if (!isAuthenticated) {
       if (window.confirm("You need to login to enroll. Go to login page?")) {
@@ -108,9 +174,13 @@ function CourseDetailPage() {
 
     try {
       setEnrolling(true);
-      await enrollCourse(course._id);
-      alert("Enrolled successfully!");
-      navigate("/my-courses");
+      const res = await enrollCourse(course._id);
+      if (res.data?.waitlisted) {
+        alert(res.data.message || "This course is full. You've been added to the waitlist.");
+      } else {
+        alert("Enrolled successfully!");
+        navigate("/my-courses");
+      }
     } catch (err) {
       console.error(err);
       const msg = err.response?.data?.message || "Enrollment failed. Please try again.";
@@ -165,7 +235,7 @@ function CourseDetailPage() {
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
               <Chip label={course.category} color="primary" />
               <Chip label={`Language: ${course.language}`} variant="outlined" />
-              <Chip label={`CEFR: ${course.cefrLevel}`} variant="outlined" color="secondary" />
+              <Chip label={`Level: ${course.cefrLevel}`} variant="outlined" color="secondary" />
               {course.status !== "published" && (
                 <Chip label={`Status: ${course.status.toUpperCase()}`} color="warning" />
               )}
@@ -225,11 +295,27 @@ function CourseDetailPage() {
                   <Box key={r._id} sx={{ pb: 3, borderBottom: "1px solid #eaeaea", "&:last-child": { borderBottom: 0 } }}>
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
                       <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                        {r.studentId?.name || "Student"}
+                        {r.studentId?.name || r.studentId?.fullName || "Student"}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {new Date(r.createdAt).toLocaleDateString()}
-                      </Typography>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          {new Date(r.createdAt).toLocaleDateString()}
+                        </Typography>
+                        {user && r.studentId?._id === user.id ? (
+                          <>
+                            <IconButton size="small" onClick={() => openEditReview(r)} aria-label="Edit review">
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton size="small" onClick={() => handleDeleteReview(r)} aria-label="Delete review">
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </>
+                        ) : isAuthenticated ? (
+                          <IconButton size="small" onClick={() => openFlagReview(r)} aria-label="Report review">
+                            <FlagIcon fontSize="small" />
+                          </IconButton>
+                        ) : null}
+                      </Box>
                     </Box>
                     <Rating value={r.rating} readOnly size="small" sx={{ mb: 1 }} />
                     <Typography variant="body2" color="text.secondary">
@@ -384,6 +470,52 @@ function CourseDetailPage() {
           </Card>
         </Grid>
       </Grid>
+
+      <Dialog open={Boolean(editingReview)} onClose={() => setEditingReview(null)} fullWidth maxWidth="sm">
+        <DialogTitle>Edit your review</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            {reviewActionError && <Typography color="error" variant="body2">{reviewActionError}</Typography>}
+            <Rating value={editRating} onChange={(e, v) => setEditRating(v)} />
+            <TextField
+              label="Comment"
+              value={editComment}
+              onChange={(e) => setEditComment(e.target.value)}
+              multiline
+              minRows={3}
+              fullWidth
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditingReview(null)}>Cancel</Button>
+          <Button variant="contained" onClick={handleSaveEditReview}>Save</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={Boolean(flaggingReview)} onClose={() => setFlaggingReview(null)} fullWidth maxWidth="sm">
+        <DialogTitle>Report this review</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            {reviewActionError && <Typography color="error" variant="body2">{reviewActionError}</Typography>}
+            <Typography variant="body2" color="text.secondary">
+              Let us know why this review is inappropriate or violates our guidelines.
+            </Typography>
+            <TextField
+              label="Reason (optional)"
+              value={flagReason}
+              onChange={(e) => setFlagReason(e.target.value)}
+              multiline
+              minRows={2}
+              fullWidth
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setFlaggingReview(null)}>Cancel</Button>
+          <Button variant="contained" color="warning" onClick={handleSubmitFlag}>Report</Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

@@ -4,16 +4,22 @@ import {
   Alert,
   Box,
   Button,
+  Divider,
+  IconButton,
+  InputAdornment,
   Link,
   Stack,
   TextField,
   Typography
 } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useAuth } from '../../contexts/AuthContext';
 import authService from '../../services/authService';
+import GoogleSignInButton from '../../components/auth/GoogleSignInButton';
 
 function RegisterPage() {
-  const { register } = useAuth();
+  const { register, googleLogin } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     fullName: '',
@@ -22,9 +28,20 @@ function RegisterPage() {
   });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (event) => {
     setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+  };
+
+  const handleGoogleSuccess = async (credential) => {
+    setError('');
+    try {
+      await googleLogin(credential);
+      navigate('/dashboard', { replace: true });
+    } catch (err) {
+      setError(authService.getErrorMessage(err));
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -67,17 +84,40 @@ function RegisterPage() {
         <TextField
           label="Password"
           name="password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           value={form.password}
           onChange={handleChange}
           required
           fullWidth
           helperText="Min 8 chars, 1 uppercase, 1 number, 1 symbol"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }
+          }}
         />
         <Button type="submit" variant="contained" disabled={submitting} fullWidth>
           {submitting ? 'Creating account...' : 'Register'}
         </Button>
       </Stack>
+
+      <Divider sx={{ my: 2 }}>OR</Divider>
+      <GoogleSignInButton
+        text="signup_with"
+        onSuccess={handleGoogleSuccess}
+        onError={(err) => setError(err.message)}
+      />
+
       <Box sx={{ mt: 2 }}>
         <Typography variant="body2">
           Already have an account?{' '}

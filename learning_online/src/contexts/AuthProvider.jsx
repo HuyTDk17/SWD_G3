@@ -47,6 +47,12 @@ export function AuthProvider({ children }) {
     return result;
   };
 
+  const googleLogin = async (credential) => {
+    const result = await authService.googleLogin(credential);
+    setUser(result.user);
+    return result;
+  };
+
   const register = async (payload) => authService.register(payload);
   const verifyOtp = async (payload) => authService.verifyOtp(payload);
   const resendOtp = async (payload) => authService.resendOtp(payload);
@@ -64,6 +70,7 @@ export function AuthProvider({ children }) {
     loading,
     isAuthenticated: Boolean(user),
     login,
+    googleLogin,
     logout,
     register,
     verifyOtp,

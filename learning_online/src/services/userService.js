@@ -22,6 +22,7 @@ const userService = {
   },
   updateUserStatus: async (id, status) => unwrap(await userApi.updateUserStatus(id, status)),
   updateUserRole: async (id, role) => unwrap(await userApi.updateUserRole(id, role)),
+  changePassword: async (payload) => unwrap(await userApi.changePassword(payload)),
   getErrorMessage: authService.getErrorMessage
 };
 

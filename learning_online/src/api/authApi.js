@@ -18,6 +18,10 @@ const authApi = {
     return axiosClient.post(`${AUTH_API_PREFIX}/login`, payload);
   },
 
+  googleLogin(credential) {
+    return axiosClient.post(`${AUTH_API_PREFIX}/google`, { credential });
+  },
+
   refresh() {
     return axiosClient.post(`${AUTH_API_PREFIX}/refresh`);
   },

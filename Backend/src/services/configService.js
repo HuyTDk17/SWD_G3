@@ -6,7 +6,7 @@ const configService = {
     if (!config) {
       // Seed default configs (Step 14 config values)
       if (key === 'categories') {
-        config = await SystemConfig.create({ key, value: ['General', 'Business', 'Travel', 'Academic', 'Conversation'] });
+        config = await SystemConfig.create({ key, value: ['Programming Fundamentals', 'Frontend', 'Backend', 'Database', 'DevOps', 'Mobile'] });
       } else if (key === 'cefr_levels') {
         config = await SystemConfig.create({ key, value: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] });
       } else {

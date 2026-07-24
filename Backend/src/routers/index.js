@@ -13,6 +13,7 @@ const notificationRouter = require('./notification');
 const aiRouter = require('./ai');
 const dashboardRouter = require('./dashboard');
 const adminRouter = require('./admin');
+const configRouter = require('./config');
 
 router.use('/api/v1/auth', authRouter);
 router.use('/api/v1/users', userRouter);
@@ -25,5 +26,6 @@ router.use('/api/v1/notifications', notificationRouter);
 router.use('/api/v1/ai', aiRouter);
 router.use('/api/v1/dashboard', dashboardRouter);
 router.use('/api/v1/admin', adminRouter);
+router.use('/api/v1/config', configRouter);
 
 module.exports = router;

@@ -2,6 +2,7 @@ const reviewRepository = require('../repositories/reviewRepository');
 const courseRepository = require('../repositories/courseRepository');
 const Enrollment = require('../models/Enrollment');
 const Review = require('../models/Review');
+const notificationService = require('./notificationService');
 const ERROR_CODES = require('../constants/errorCodes');
 const ValidationError = require('../exceptions/ValidationError');
 const ForbiddenError = require('../exceptions/ForbiddenError');
@@ -88,6 +89,65 @@ const reviewService = {
     }
 
     return updated;
+  },
+
+  async updateReview(studentId, reviewId, data) {
+    const review = await reviewRepository.findById(reviewId);
+    if (!review) throw new NotFoundError('Review not found', ERROR_CODES.NOT_FOUND);
+    if (review.studentId._id.toString() !== studentId.toString()) {
+      throw new ForbiddenError('You can only edit your own review', ERROR_CODES.FORBIDDEN);
+    }
+
+    const updated = await reviewRepository.updateContent(reviewId, {
+      rating: Number(data.rating),
+      comment: data.comment || ''
+    });
+
+    // Editing changes the rating value, so re-sync the course's aggregate rating.
+    await reviewService.syncCourseRating(review.courseId._id);
+    return updated;
+  },
+
+  async deleteReview(userId, role, reviewId) {
+    const review = await reviewRepository.findById(reviewId);
+    if (!review) throw new NotFoundError('Review not found', ERROR_CODES.NOT_FOUND);
+
+    const isOwner = review.studentId._id.toString() === userId.toString();
+    if (!isOwner && role !== 'admin') {
+      throw new ForbiddenError('You can only delete your own review', ERROR_CODES.FORBIDDEN);
+    }
+
+    await reviewRepository.deleteById(reviewId);
+    await reviewService.syncCourseRating(review.courseId._id);
+    return { message: 'Review deleted' };
+  },
+
+  async flagReview(userId, reviewId, reason) {
+    const review = await reviewRepository.findById(reviewId);
+    if (!review) throw new NotFoundError('Review not found', ERROR_CODES.NOT_FOUND);
+
+    const alreadyFlagged = (review.flags || []).some((f) => f.userId.toString() === userId.toString());
+    if (alreadyFlagged) {
+      throw new ValidationError('You have already flagged this review');
+    }
+
+    return reviewRepository.addFlag(reviewId, userId, reason || '');
+  },
+
+  async getFlaggedReviews(role) {
+    if (role !== 'admin') {
+      throw new ForbiddenError('Only administrators can access flagged reviews', ERROR_CODES.FORBIDDEN);
+    }
+    return reviewRepository.findFlagged();
+  },
+
+  async syncCourseRating(courseId) {
+    const stats = await reviewRepository.aggregateCourseRating(courseId);
+    const averageRating = stats.averageRating ? Math.round(stats.averageRating * 10) / 10 : 0;
+    await courseRepository.updateById(courseId, {
+      averageRating,
+      reviewCount: stats.reviewCount
+    });
   }
 };
 

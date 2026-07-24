@@ -21,7 +21,7 @@ import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { resolveMediaUrl } from "../utils/media";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { getEnrolledCourses, unenrollCourse, togglePin } from "../api/enrollmentApi";
+import { getEnrolledCourses, unenrollCourse, togglePin, getMyWaitlist, leaveWaitlist } from "../api/enrollmentApi";
 import { useAuth } from "../contexts/AuthContext";
 
 function MyCourses() {
@@ -29,6 +29,7 @@ function MyCourses() {
   const { user } = useAuth();
   
   const [enrollments, setEnrollments] = useState([]);
+  const [waitlist, setWaitlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -36,8 +37,9 @@ function MyCourses() {
     try {
       setLoading(true);
       setError(null);
-      const res = await getEnrolledCourses();
+      const [res, waitlistRes] = await Promise.all([getEnrolledCourses(), getMyWaitlist()]);
       setEnrollments(res.data || []);
+      setWaitlist(waitlistRes.data || []);
     } catch (err) {
       console.error(err);
       setError("Failed to load your enrolled courses list.");
@@ -74,6 +76,15 @@ function MyCourses() {
     }
   };
 
+  const handleLeaveWaitlist = async (waitlistId) => {
+    try {
+      await leaveWaitlist(waitlistId);
+      setWaitlist((prev) => prev.filter((w) => w._id !== waitlistId));
+    } catch (err) {
+      alert("Failed to leave waitlist: " + (err.response?.data?.message || err.message));
+    }
+  };
+
   if (loading) {
     return (
       <Container maxWidth="lg" sx={{ py: 8, textAlign: "center" }}>
@@ -100,6 +111,34 @@ function MyCourses() {
       <Typography variant="h4" component="h1" sx={{ fontWeight: 800, mb: 4 }}>
         My Enrolled Courses
       </Typography>
+
+      {waitlist.length > 0 && (
+        <Paper sx={{ p: 3, mb: 4, borderRadius: 3, bgcolor: "#fff8e1" }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+            Waitlisted Courses ({waitlist.length})
+          </Typography>
+          <Grid container spacing={2}>
+            {waitlist.map((w) => (
+              <Grid size={{ xs: 12, sm: 6 }} key={w._id}>
+                <Card sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                      {w.courseId?.title || "Course"}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Joined {new Date(w.joinedAt).toLocaleDateString()}
+                      {w.notifiedAt ? " · A seat is available now!" : ""}
+                    </Typography>
+                  </Box>
+                  <IconButton onClick={() => handleLeaveWaitlist(w._id)} aria-label="Leave waitlist">
+                    <DeleteIcon />
+                  </IconButton>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
+      )}
 
       {sortedEnrollments.length === 0 ? (
         <Paper sx={{ p: 8, textAlign: "center", borderRadius: 3 }}>

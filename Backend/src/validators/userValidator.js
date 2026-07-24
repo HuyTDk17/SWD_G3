@@ -113,6 +113,21 @@ const userValidators = {
       throw new ValidationError(`Role must be one of: ${ROLE_LIST.join(', ')}`);
     }
     return { role: body.role };
+  },
+
+  changePassword(body) {
+    const errors = [];
+    if (!body.currentPassword) {
+      errors.push({ field: 'currentPassword', message: 'Current password is required' });
+    }
+    if (!body.newPassword || body.newPassword.length < 8) {
+      errors.push({ field: 'newPassword', message: 'New password must be at least 8 characters' });
+    }
+    if (body.newPassword && body.currentPassword && body.newPassword === body.currentPassword) {
+      errors.push({ field: 'newPassword', message: 'New password must be different from current password' });
+    }
+    if (errors.length) throw new ValidationError('Validation failed', errors);
+    return { currentPassword: body.currentPassword, newPassword: body.newPassword };
   }
 };
 

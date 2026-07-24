@@ -25,10 +25,7 @@ const verifyRefreshToken = (token) => {
 };
 
 const generateOtpCode = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return String(Math.floor(100000 + Math.random() * 900000));
-  }
-  return '123456';
+  return String(Math.floor(100000 + Math.random() * 900000));
 };
 
 module.exports = {

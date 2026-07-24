@@ -18,8 +18,8 @@ const courseSchema = new mongoose.Schema({
     },
     language: {
         type: String,
-        default: 'English',
-        enum: ['English', 'Vietnamese', 'French', 'Spanish', 'Chinese', 'Japanese', 'Korean']
+        default: 'JavaScript',
+        enum: ['HTML/CSS', 'JavaScript', 'TypeScript', 'Python', 'Java', 'C#', 'C++', 'SQL', 'NoSQL', 'Git']
     },
     cefrLevel: {
         type: String,

@@ -7,6 +7,7 @@ const app = express();
 const connectDB = require('./config/db')
 const router = require('./src/routers/index');
 const errorHandler = require('./src/middlewares/errorHandler');
+const startJobs = require('./src/jobs');
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
@@ -21,6 +22,7 @@ app.use(cookieParser());
 
 // Connect to database
 connectDB();
+startJobs();
 
 // Routes
 app.use('/uploads', express.static('uploads'));
